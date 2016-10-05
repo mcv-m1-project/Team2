@@ -4,7 +4,6 @@
  
  
  %Hola team2 
- int i;
 function TrafficSignDetection(directory, pixel_method, window_method, decision_method)
     % TrafficSignDetection
     % Perform detection of Traffic signs on images. Detection is performed first at the pixel level
