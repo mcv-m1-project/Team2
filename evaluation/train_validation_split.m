@@ -12,7 +12,7 @@ function [trainSet, validationSet] = train_validation_split( dataPath, signalRep
 %       'trainSet' - Vector contining the train set identifiers
 %       'validationSet' - Vector conteining the validation set identifiers
 
-    data = dir(dataPath);
+   data = dir(strcat(dataPath,'\gt'));
     [height, unused] = size(data); %height is the number of files + 2
 
     trainSet = [];
