@@ -51,6 +51,8 @@ function [trainSet, validationSet] = train_validation_split( dataPath, signalRep
     end
 
     trainSet = strsplit(trainSet,',');
+    trainSet = trainSet(2:length(trainSet));
     validationSet = strsplit(validationSet,',');
+    validationSet = validationSet(2:length(validationSet));
 end
 
