@@ -1,4 +1,4 @@
-function [signals_list, nrepetitions] = count_signals_types(directory)
+function [signals_list, nrepetitions] = count_signals_types(directory, filenames)
     % count_signals_types
     % Get the different types of signals that appear in the annotations
     % at the given directory, and count how many times the appear.
@@ -8,30 +8,14 @@ function [signals_list, nrepetitions] = count_signals_types(directory)
     %    Parameter name      Value
     %    --------------      -----
     %    'directory'         Directory where to search for annotations files
-    %
-    % We assume all files ending with '.txt' are annotations.
+    %    'filenames'         Cell array with the names of the annotations files
     %
     % The function returns a cell array with the names of the different
     % signals found (signals_list) and a vector with the number of times
-    % each signal appears.
+    % each signal appears. Both arrays are alphabetically ordered.
 
 
-    % We make a list of the files with ground truth annotations:
-    % Files list in dataset:
-    dirlist = dir(directory);
-    nfiles = 0; % Initialize the number of files with Ground Truth annotations.
-    filenames = cell(0); % Initialize cell array with file names.
-    % I go over dirlist, selecting those names which correspond to a Ground
-    % Truth annotation:
-    for i = 1:size(dirlist,1)
-        name = dirlist(i).name;
-        % I check the name ends with '.txt':
-        if(~isempty(regexp(name, '.*\.txt$')))
-            nfiles = nfiles + 1;
-            filenames{nfiles} = name;
-        end
-    end
-
+    nfiles = length(filenames); % Number of files with annotations.
     signals_list = cell(0); % Initialize cell array with the names of the different types of signals.
     ntypes = 0; % Number of different signal types.
     nrepetitions = []; % Vector with the number of repetitions of each signal type.
@@ -40,7 +24,7 @@ function [signals_list, nrepetitions] = count_signals_types(directory)
     for file = 1:nfiles
         % Annotations reading:
         filepath = [directory, '\', filenames{file}];
-        [annotations signs_file] = LoadAnnotations(filepath);
+        [~, signs_file] = LoadAnnotations(filepath);
 
         % Loop over the signals found in the file:
         for i = 1:length(signs_file)
@@ -63,6 +47,10 @@ function [signals_list, nrepetitions] = count_signals_types(directory)
             end
         end
     end
+    
+    % Alphabetically sorting:
+    [signals_list, ix] = sort(signals_list);
+    nrepetitions = nrepetitions(ix);
 
     return
 end
