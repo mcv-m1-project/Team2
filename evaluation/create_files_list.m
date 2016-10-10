@@ -1,4 +1,4 @@
-function [gt_list, mask_list, images_list] = create_files_list(dirdataset)
+function [gt_list, mask_list, image_list] = create_files_list(dirdataset)
     % create_files_list
     % Creates a list with the grount truth, mask and original image files
     % in the specified directory.
@@ -19,7 +19,7 @@ function [gt_list, mask_list, images_list] = create_files_list(dirdataset)
     % The function returns a cell array with the names of all grount truth
     % files (gt_list), a cell array with the names of all mask files
     % (mask_list), and a cell array with the names of all original image
-    % files (imges_list).
+    % files (image_list).
     
     
     % Directories of grount truth annotations and masks:
@@ -33,7 +33,7 @@ function [gt_list, mask_list, images_list] = create_files_list(dirdataset)
     nfiles = 0; % Initialize the number of files with ground truth annotations.
     gt_list = cell(0); % Initialize cell array with ground truth files names.
     mask_list = cell(0); % Initialize cell array with mask files names.
-    images_list = cell(0); % Initialize cell array with image files names.
+    image_list = cell(0); % Initialize cell array with image files names.
     % I go over dirlist, selecting those names which correspond to a ground
     % truth annotation:
     for i = 1:size(dirlist,1)
@@ -47,7 +47,7 @@ function [gt_list, mask_list, images_list] = create_files_list(dirdataset)
             % beggining, as well as the '.txt' ending, and then we add
             % '.jpg' at the end:
             simplename = name(4:(regexp(name, '\.txt$')-1));
-            images_list{nfiles} = [simplename, '.jpg'];
+            image_list{nfiles} = [simplename, '.jpg'];
             % Name of the mask file (we add 'mask.' at the beggining and
             % '.png' at the end):
             mask_list{nfiles} = ['mask.', simplename, '.png'];
