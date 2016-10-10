@@ -14,6 +14,7 @@ dirTrainDataSet = [dirbase, '\..\train'];
 %display the next one.
 week1_task3_color_segmentation_test( dirTrainDataSet );
 
+%week1_task3_color_segmentation_equalization_test( dirTrainDataSet );
 
 
 
