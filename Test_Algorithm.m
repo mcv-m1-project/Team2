@@ -12,9 +12,10 @@ dirTrainDataSet = [dirbase, '\..\train'];
 
 %Every time an image is display it will wait for mouse click or enter to
 %display the next one.
-week1_task3_color_segmentation_test( dirTrainDataSet );
 
-%week1_task3_color_segmentation_equalization_test( dirTrainDataSet );
+%week1_task3_color_segmentation_test( dirTrainDataSet );
+
+week1_task3_color_segmentation_equalization_test( dirTrainDataSet );
 
 
 

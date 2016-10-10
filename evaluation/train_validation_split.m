@@ -20,7 +20,8 @@ function [trainSet, validationSet] = train_validation_split( dataPath, signalRep
     validationSigns = [0,0,0,0,0,0]; %number of elements of each class in the train set
 
     for file = 3:height %the first two elements are not files
-        filePath = strcat(data(file,1).folder,'\',data(file,1).name);
+          filePath = [dataPath '\gt\' data(file,1).name];
+%         filePath = strcat(data(file,1).folder,'\',data(file,1).name);
         [unused signs] = LoadAnnotations(filePath);
         fileSigns = [0,0,0,0,0,0];
         for signPos = 1:length(signs)
