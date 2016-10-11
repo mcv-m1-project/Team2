@@ -48,12 +48,18 @@ signals = signals(filling_ratio ~= 0);
 [filling_ratio, form_factor, fr_means, ff_means] = get_fr_ff_bytypes(signals, ...
                                                    signals_list, nrepetitions);
 
+% Calculate minimum and maximum size for each type of signal:
+[min_size, max_size] = get_min_max_size_bytypes(signals, signals_list, nrepetitions);
+
 % Summary of signal types:
 fprintf('\nSummary of signal types:\n')
-fprintf('signal type  |  nrepetitions  |  filling ratio  |  form factor\n')
+fprintf(['type  |  nrep  |  fill ratio  |  form fac', ...
+        '  |  min size  |  max size\n'])
 for i = 1:length(signals_list)
-    fprintf('     %s               %3i             %5.3f            %5.3f \n', ...
-        signals_list{i}, nrepetitions(i), fr_means(i), ff_means(i))
+    fprintf(['  %s       %3i        %5.3f         %5.3f', ...
+             '       %6.2f      %7.2f \n'], ...
+             signals_list{i}, nrepetitions(i), fr_means(i), ff_means(i), ...
+             min_size(i), max_size(i))
 end
 
 
