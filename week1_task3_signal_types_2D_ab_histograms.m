@@ -22,6 +22,7 @@ counter_type_d = 0;
 counter_type_e = 0;
 counter_type_f = 0;
 
+figure,
 for idx = 1:size(trainSet,2) 
 
 %     [~, signs_type] = LoadAnnotations([dirTrainDataSet '\gt\gt.' trainSet{idx} '.txt']);
@@ -42,8 +43,15 @@ for idx = 1:size(trainSet,2)
             %compare if
             im_test_signal = bsxfun(@times, im_test, cast(im_mask,class(im_test)));
             
+            im_test_signal(find(~im_test_signal)) = NaN;
+            
             ch_a = im_test_signal(:,:,2);
             ch_b = im_test_signal(:,:,3);
+            
+            %Show images
+%             subplot(3,1,1), imshow(im_test_signal)
+%             subplot(3,1,2), imshow(ch_a, [])
+%             subplot(3,1,3), imshow(ch_b, [])
             
             h = hist3(double([ch_a(:) ch_b(:)]), [64 64]);
             % [m idx] = max(h(:));
@@ -91,6 +99,14 @@ figure, bar3(hist_c_acc), title('C'), xlabel('a component'), ylabel('b component
 figure, bar3(hist_d_acc), title('D'), xlabel('a component'), ylabel('b component')
 figure, bar3(hist_e_acc), title('E'), xlabel('a component'), ylabel('b component')
 figure, bar3(hist_f_acc), title('F'), xlabel('a component'), ylabel('b component')
+
+figure, subplot(2,3,1), imagesc(hist_a_acc), title('A'), xlabel('a component'), ylabel('b component')
+subplot(2,3,2), imagesc(hist_b_acc), title('B'), xlabel('a component'), ylabel('b component')
+subplot(2,3,3), imagesc(hist_c_acc), title('C'), xlabel('a component'), ylabel('b component')
+subplot(2,3,4), imagesc(hist_d_acc), title('D'), xlabel('a component'), ylabel('b component')
+subplot(2,3,5), imagesc(hist_e_acc), title('E'), xlabel('a component'), ylabel('b component')
+subplot(2,3,6), imagesc(hist_f_acc), title('F'), xlabel('a component'), ylabel('b component')
+
 
 save('signal_types_ab_histograms', 'hist_a_acc', 'hist_b_acc', 'hist_c_acc', 'hist_d_acc', 'hist_e_acc', 'hist_f_acc');
 
