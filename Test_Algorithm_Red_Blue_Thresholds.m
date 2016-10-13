@@ -75,7 +75,7 @@ step2 = (max(XinF_lab(:,2)) - min(XinF_lab(:,2))) / (ntrials-1);
 step3 = (max(XinF_lab(:,3)) - min(XinF_lab(:,3))) / (ntrials-1);
 th2_vec = min(XinF_lab(:,2)) : step2 : max(XinF_lab(:,2));
 th3_vec = min(XinF_lab(:,3)) : step3 : max(XinF_lab(:,3));
-min_percenin = 30;
+min_percenin = 50;
 [lowth2_blue, highth2_blue, lowth3_blue, highth3_blue] = find_segmentation_4ths(th2_vec, th3_vec, ...
                                            min_percenin, npixels, XinF_lab, XoutF_lab);
                                  
@@ -94,7 +94,7 @@ step2 = (max(XinC_lab(:,2)) - min(XinC_lab(:,2))) / (ntrials-1);
 step3 = (max(XinC_lab(:,3)) - min(XinC_lab(:,3))) / (ntrials-1);
 th2_vec = min(XinC_lab(:,2)) : step2 : max(XinC_lab(:,2));
 th3_vec = min(XinC_lab(:,3)) : step3 : max(XinC_lab(:,3));
-min_percenin = 30;
+min_percenin = 40;
 [lowth2_red, highth2_red, lowth3_red, highth3_red] = find_segmentation_4ths(th2_vec, th3_vec, ...
                                      min_percenin, npixels, XinC_lab, XoutC_lab);
                                  
