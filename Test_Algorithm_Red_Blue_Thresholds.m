@@ -123,7 +123,7 @@ for idx = 1:size(validationSet,2)
        image_lab(:,:,3) > lowth3_blue & image_lab(:,:,3) < highth3_blue | ...
        image_lab(:,:,3) > lowth3_red & image_lab(:,:,3) < highth3_red;
    
-    subplot(1,2,1), imshow(image)  
+    subplot(1,2,1), imshow(im_test)  
     subplot(1,2,2), imshow(mask, [0 1])
 
     w = waitforbuttonpress;
