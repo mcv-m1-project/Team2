@@ -22,7 +22,6 @@ counter_type_d = 0;
 counter_type_e = 0;
 counter_type_f = 0;
 
-figure,
 for idx = 1:size(trainSet,2) 
 
 %     [~, signs_type] = LoadAnnotations([dirTrainDataSet '\gt\gt.' trainSet{idx} '.txt']);
@@ -107,7 +106,54 @@ subplot(2,3,4), imagesc(hist_d_acc), title('D'), xlabel('a component'), ylabel('
 subplot(2,3,5), imagesc(hist_e_acc), title('E'), xlabel('a component'), ylabel('b component')
 subplot(2,3,6), imagesc(hist_f_acc), title('F'), xlabel('a component'), ylabel('b component')
 
-
 save('signal_types_ab_histograms', 'hist_a_acc', 'hist_b_acc', 'hist_c_acc', 'hist_d_acc', 'hist_e_acc', 'hist_f_acc');
+
+hist_acc = hist_a_acc + hist_b_acc + hist_c_acc + hist_d_acc + hist_e_acc + hist_f_acc;
+figure, bar3(hist_acc), title('global'), xlabel('a component'), ylabel('b component')
+
+first_max = max(max(hist_acc));
+[first_max_i,first_max_j] = find (hist_acc==first_max);
+second_max = max(max(hist_acc(hist_acc < first_max)));
+[second_max_i,second_max_j] = find (hist_acc==second_max);
+hist_filter = zeros(64,64);
+
+rad_blue = 15;
+for i = max(first_max_i-rad_blue,1):min(first_max_i+rad_blue,64)
+    for j = max(first_max_j-rad_blue,1):min(first_max_j+rad_blue,64)
+        hist_filter(i,j) = 1;
+    end
+end
+rad_red = 20;
+for i = max(second_max_i-rad_red,1):min(second_max_i+rad_red,64)
+    for j = max(second_max_j-rad_red,1):min(second_max_j+rad_red,64)
+        hist_filter(i,j) = 1;
+    end
+end
+
+hist_acc_filtered = hist_acc.*hist_filter;
+figure, bar3(hist_acc_filtered), title('filtered'), xlabel('a component'), ylabel('b component')
+
+[unused,trainSize] = size(trainSet);
+for image = 1:trainSize
+   im_orig = imread([dirTrainDataSet '\' trainSet{image} '.jpg']);
+   im = double(im_orig)/255;
+   im = colorspace('Lab<-RGB',im);
+   mask = im*0;
+   [m,n,unused] = size(im);
+   for i = 1:m
+       for j = 1:n
+           a_component = ceil((im(i,j,2)+128)/4);
+           b_component = ceil((im(i,j,3)+128)/4);
+           if hist_acc_filtered(a_component,b_component) > 0
+               mask(i,j,:) = 1;
+           end
+       end
+   end
+%    figure,
+%    subplot(1,2,1), imshow(im_orig);
+%    subplot(1,2,2), imshow(mask, [0 1]);
+   imwrite(mask,[dirTrainDataSet '\result_mask\' trainSet{image} '.png']);
+end
+
 
 end
