@@ -138,14 +138,15 @@ for image = 1:trainSize
    im_orig = imread([dirTrainDataSet '\' trainSet{image} '.jpg']);
    im = double(im_orig)/255;
    im = colorspace('Lab<-RGB',im);
-   mask = im*0;
+   [height,width,unused] = size(im);
+   mask = zeros(height,width);
    [m,n,unused] = size(im);
    for i = 1:m
        for j = 1:n
            a_component = ceil((im(i,j,2)+128)/4);
            b_component = ceil((im(i,j,3)+128)/4);
            if hist_acc_filtered(a_component,b_component) > 0
-               mask(i,j,:) = 1;
+               mask(i,j) = 1;
            end
        end
    end
