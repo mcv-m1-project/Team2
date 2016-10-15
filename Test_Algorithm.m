@@ -22,8 +22,10 @@ load('signals_workspace.mat');
 
 %Call the function to build and save the 2D histograms for each signal type
 %using Lab color space
-week1_task3_signal_types_2D_ab_histograms(dirTrainDataSet, trainSet, signals)
-  
+%week1_task3_signal_types_2D_ab_histograms(dirTrainDataSet, trainSet, signals)
+
+week1_task3_signal_types_1D_histograms(dirTrainDataSet, trainSet, signals)
+
 %Find masks and suitable thresholds........
 
 
