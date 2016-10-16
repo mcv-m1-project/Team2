@@ -1,4 +1,4 @@
-function week1_task3_signal_types_1D_histograms(dirTrainDataSet, trainSet, signals, validationSet)
+function week1_task3_signal_types_1D_histograms(dirTrainDataSet, trainSet, signals)
 %week1_task3_color_segmentation_test
 %   Use Lab color space to make the color mask.
 %
@@ -182,10 +182,11 @@ t_ch_b=otsuthresh(hist_ch_b_acum)-0.25;
 
 t_ch_a
 t_ch_b
+save('1D_channel_a_threshold', 't_ch_a');
+save('1D_channel_b_threshold', 't_ch_b');
 
-
-
-for image = 1:size(trainSet,2) 
+[unused,trainSize] = size(trainSet);
+for image = 1:trainSize 
    im_orig = imread([dirTrainDataSet '\' trainSet{image} '.jpg']);
    im = double(im_orig)/255;
    im = colorspace('Lab<-RGB',im);
@@ -214,7 +215,7 @@ for image = 1:size(trainSet,2)
 %    subplot(2,2,3), imshow(mask_ch_b), title('ch_b mask')
 %    subplot(2,2,4), imshow(mask), title('mask')
 %    w = waitforbuttonpress;
-   imwrite(mask,[dirTrainDataSet '\result_mask\1D_histogram\' trainSet{image} '.png']);
+   imwrite(mask,[dirTrainDataSet '\result_mask\1D_histogram\train\' trainSet{image} '.png']);
 end
 
 end

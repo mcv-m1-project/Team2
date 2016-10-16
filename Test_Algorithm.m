@@ -27,7 +27,9 @@ load('signals_workspace.mat');
 week1_task3_hand_picked_masks(dirTrainDataSet, validationSet)
  
 % 1D Histogram Method
-week1_task3_signal_types_1D_histograms(dirTrainDataSet, validationSet, signals)
+week1_task3_signal_types_1D_histograms(dirTrainDataSet, trainSet, signals)
+% % Save the validation split result masks
+week1_task3_signal_types_1D_histograms_validation(dirTrainDataSet, validationSet)
 
 % 2D Histogram Method
 % Execute the method once to obtain the desired thresholds using the train split
