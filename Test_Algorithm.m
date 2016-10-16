@@ -48,7 +48,10 @@ dirResult = [dirTrainDataSet '\result_mask\2D_hist\validation\' ];
 [precision_2d_hist,accuracy_2d_hist,recall_2d_hist,F_2d_hist,TP_2d_hist,FP_2d_hist,FN_2d_hist] = evaluation( dirGroundTruth, dirResult )
 
 % RBT Method
-week1_task3_RBT(dirTrainDataSet, trainSet, validationSet, signals)
+%Run the train algorithm only once
+week1_task3_RBT_train(dirTrainDataSet, trainSet, signals, image_list, mask_list, dirmask)
+% Save the validation split result masks
+week1_task3_RBT_validation(dirTrainDataSet, validationSet)
 
 dirResult = [dirTrainDataSet '\result_mask\RBT\validation\' ];
 [precision_RBT,accuracy_RBT,recall_RBT,F_RBT,TP_RBT,FP_RBT,FN_RBT] = evaluation( dirGroundTruth, dirResult )
