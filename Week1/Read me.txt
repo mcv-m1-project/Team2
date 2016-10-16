@@ -1,3 +1,5 @@
-To execute the final system, run the function 'color_segmentation'.
+To execute the final system, run the function 'Color_segmentation'.
+	This will generate a new folder called 'result_masks' inside the test data set folder with the obtained masks.
 
-TO run the full system (all the color segmentation methods) run the function 'Test_algorithm'.
+To run the full system (all the color segmentation methods) run the function 'Test_Algorithm'.
+	This will generate a new folder called 'result_mask' inside the train data set folder with the obtained masks for each method.
