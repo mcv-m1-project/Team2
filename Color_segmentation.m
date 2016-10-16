@@ -23,7 +23,7 @@ hist_acc_filtered = load('2d_ab_histograms_filter');
 test_images = dir(dirTestDataSet);
 tic
 hist_acc_filtered = hist_acc_filtered.hist_acc_filtered;
-for idx = 3:size(test_images,1)
+for idx = 3:size(test_images,1)-1
    im_orig = imread([dirTestDataSet '\' test_images(idx).name]);
    im = double(im_orig)/255;
    im = colorspace('Lab<-RGB',im);
