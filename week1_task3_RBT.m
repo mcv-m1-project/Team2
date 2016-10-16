@@ -24,13 +24,12 @@ function week1_task3_RBT(dirTrainDataSet, trainSet, validationSet, signals)
 % RBT_select(min_percenin_blue, min_percenin_red)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tic
 % Write masks for every image of the validation set:
 for file = 1:length(validationSet)
     image = imread([dirTrainDataSet '\' validationSet{file} '.jpg']);
     mask = RBT_mask(image);
     imwrite(mask, [dirTrainDataSet '\result_mask\RBT\validation\' validationSet{file} '.png']);
 end
-toc
+
 end
 
