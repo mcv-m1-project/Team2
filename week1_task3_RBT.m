@@ -1,25 +1,11 @@
-clear all
-close all
-
-% We add the path where some scripts are.
-addpath('evaluation\')
-addpath('colorspace\')
-addpath('..\train\')
-
-% Base directory:
-dirbase = pwd;
-% Path to the training dataset images
-dirTrainDataSet = [dirbase, '\..\train'];
-% Path to Ground Truth annotations:
-dirgt = [dirTrainDataSet, '\gt'];
-% Path to Masks:
-dirmask = [dirTrainDataSet, '\mask'];
-
-% Load variables from week1_task1 to save computation time
-load('signals_workspace.mat');
-
-% Separate the train from the validation images
-[trainSet, validationSet] = train_validation_split(dirTrainDataSet, nrepetitions);
+function week1_task3_RBT(dirTrainDataSet, trainSet, validationSet, signals)
+%week1_task3_color_segmentation_test
+%   Use Lab color space to make the color mask.
+%
+%   Parameters
+%       'dirTrainDataSet' - Path to the training dataset
+%       'trainSet' - Array of images used for training
+%       'signals' - Array of objects with all the information about each signal
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%% Must be run only ONCE %%%%%%%%%%%%%%%%%%%%%
@@ -46,4 +32,5 @@ for file = 1:length(validationSet)
     imwrite(mask, [dirTrainDataSet '\result_mask\RBT\maskRBT_' validationSet{file} '.png']);
 end
 
+end
 
