@@ -10,6 +10,7 @@ dirbase = pwd;
 % Path to the test dataset images
 dirTestDataSet = [dirbase, '\..\..\test'];
 
+mkdir(dirTestDataSet, 'result_masks');
 % Path to the computed masks:
 mkdir([dirTestDataSet, '\result_masks']);
 dir_result_masks = [dirTestDataSet, '\result_masks'];
