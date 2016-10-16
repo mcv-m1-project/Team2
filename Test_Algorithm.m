@@ -15,7 +15,7 @@ dirgt = [dirTrainDataSet, '\gt'];
 dirmask = [dirTrainDataSet, '\mask'];
 
 %Load variables from week1_task1 to save computation time
-load('signals_workspace.mat');
+week1_task1
 
 %Separate the train from the validation images
 [trainSet, validationSet] = train_validation_split(dirTrainDataSet, nrepetitions);

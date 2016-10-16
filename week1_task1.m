@@ -6,10 +6,6 @@
 %%%%% Modificado 10/10/2016
 %%%%% Recuento de la frecuencia de aparición de cada tipo de señal.
 
-
-clear all
-close all
-
 % Base directory:
 dirbase = pwd;
 
