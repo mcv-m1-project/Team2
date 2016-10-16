@@ -106,8 +106,6 @@ subplot(2,3,4), imagesc(hist_d_acc), title('D'), xlabel('a component'), ylabel('
 subplot(2,3,5), imagesc(hist_e_acc), title('E'), xlabel('a component'), ylabel('b component')
 subplot(2,3,6), imagesc(hist_f_acc), title('F'), xlabel('a component'), ylabel('b component')
 
-save('signal_types_ab_histograms', 'hist_a_acc', 'hist_b_acc', 'hist_c_acc', 'hist_d_acc', 'hist_e_acc', 'hist_f_acc');
-
 hist_acc = hist_a_acc + hist_b_acc + hist_c_acc + hist_d_acc + hist_e_acc + hist_f_acc;
 figure, bar3(hist_acc), title('global'), xlabel('a component'), ylabel('b component')
 
@@ -132,6 +130,7 @@ end
 
 hist_acc_filtered = hist_acc.*hist_filter;
 figure, bar3(hist_acc_filtered), title('filtered'), xlabel('a component'), ylabel('b component')
+save('2d_ab_histograms_filter', 'hist_acc_filtered');
 
 [unused,trainSize] = size(trainSet);
 for image = 1:trainSize
