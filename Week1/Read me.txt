@@ -1,0 +1,3 @@
+To execute the final system, run the function 'color_segmentation'.
+
+TO run the full system (all the color segmentation methods) run the function 'Test_algorithm'.
