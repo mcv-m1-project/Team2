@@ -14,7 +14,7 @@ dirgt = [dirTrainDataSet, '\gt'];
 % Path to Masks:
 dirmask = [dirTrainDataSet, '\mask'];
 
-nrepetitions = week1_task1(dirTrainDataSet, dirgt, dirmask);
+[nrepetitions signals]= week1_task1(dirTrainDataSet, dirgt, dirmask);
 
 %Separate the train from the validation images
 [trainSet, validationSet] = train_validation_split(dirTrainDataSet, nrepetitions);

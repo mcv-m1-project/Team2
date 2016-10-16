@@ -1,4 +1,4 @@
-function nrepetitions = week1_task1(dirTrainDataSet, dirgt, dirmask)
+function [nrepetitions, signals] = week1_task1(dirTrainDataSet, dirgt, dirmask)
 
 %%%%% MCV - M1
 %%%%% Project - Task 1
