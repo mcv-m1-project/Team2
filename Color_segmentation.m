@@ -39,7 +39,8 @@ for idx = 3:size(dirTestDataSet,2)
            end
        end
    end
-   imwrite(mask,[dirTestDataSet '\result_masks\mask.' test_images(idx).name]);
+   file_name = strsplit(test_images(idx).name,'.jpg');
+   imwrite(mask,[dirTestDataSet '\result_masks\mask.' char(file_name(1)) '.png']);
 end
 
 toc
