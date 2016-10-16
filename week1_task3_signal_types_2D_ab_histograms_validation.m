@@ -1,4 +1,4 @@
-function week1_task3_signal_types_2D_ab_histograms_test(dirTrainDataSet, validationSet)
+function week1_task3_signal_types_2D_ab_histograms_validation(dirTrainDataSet, validationSet)
 %week1_task3_color_segmentation_test
 %   Use Lab color space to make the color mask.
 %
@@ -31,7 +31,7 @@ for image = 1:validationSize
 %    figure,
 %    subplot(1,2,1), imshow(im_orig);
 %    subplot(1,2,2), imshow(mask, [0 1]);
-   imwrite(mask,[dirTrainDataSet '\result_mask\2d_hist\' validationSet{image} '.png']);
+   imwrite(mask,[dirTrainDataSet '\result_mask\2d_hist\validation\' validationSet{image} '.png']);
 end
 
 

@@ -29,7 +29,7 @@ function week1_task3_RBT(dirTrainDataSet, trainSet, validationSet, signals)
 for file = 1:length(validationSet)
     image = imread([dirTrainDataSet '\' validationSet{file} '.jpg']);
     mask = RBT_mask(image);
-    imwrite(mask, [dirTrainDataSet '\result_mask\RBT\maskRBT_' validationSet{file} '.png']);
+    imwrite(mask, [dirTrainDataSet '\result_mask\RBT\validation\' validationSet{file} '.png']);
 end
 
 end

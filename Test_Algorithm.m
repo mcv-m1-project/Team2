@@ -24,18 +24,19 @@ load('signals_workspace.mat');
 % /train/result_mask/$(method) folder
 
 % Hand Picked Lab Color Space Masks
-week1_task3_hand_picked_masks(dirTrainDataSet, trainSet)
-
+week1_task3_hand_picked_masks(dirTrainDataSet, validationSet)
+ 
 % 1D Histogram Method
-week1_task3_signal_types_1D_histograms(dirTrainDataSet, trainSet, signals)
+week1_task3_signal_types_1D_histograms(dirTrainDataSet, validationSet, signals)
 
 % 2D Histogram Method
+% Execute the method once to obtain the desired thresholds using the train split
 week1_task3_signal_types_2D_ab_histograms(dirTrainDataSet, trainSet, signals)
-
+% Save the validation split result masks
+week1_task3_signal_types_2D_ab_histograms_validation(dirTrainDataSet, validationSet)
+ 
 % RBT Method
 week1_task3_RBT(dirTrainDataSet, trainSet, validationSet, signals)
-
-
 
 
 

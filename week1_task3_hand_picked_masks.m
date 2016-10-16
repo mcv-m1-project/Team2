@@ -19,7 +19,7 @@ for image = 1:size(trainSet,2)
    %Blue
    mask = mask | (B(:,:,2) > 0 & B(:,:,3) < -4 & B(:,:,1) < 40);
     % Write masks for every image of the train set
-   imwrite(mask,[dirTrainDataSet '\result_mask\hand_picked\' trainSet{image} '.png']);
+   imwrite(mask,[dirTrainDataSet '\result_mask\hand_picked\validation\' trainSet{image} '.png']);
 end
 
 end

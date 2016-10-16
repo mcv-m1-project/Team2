@@ -152,7 +152,7 @@ for image = 1:trainSize
 %    figure,
 %    subplot(1,2,1), imshow(im_orig);
 %    subplot(1,2,2), imshow(mask, [0 1]);
-   imwrite(mask,[dirTrainDataSet '\result_mask\2d_hist\' trainSet{image} '.png']);
+   imwrite(mask,[dirTrainDataSet '\result_mask\2d_hist\train\' trainSet{image} '.png']);
 end
 
 
