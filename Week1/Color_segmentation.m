@@ -8,7 +8,7 @@ addpath('..\..\test\')
 % Base directory:
 dirbase = pwd;
 % Path to the test dataset images
-dirTestDataSet = [dirbase, '..\..\test'];
+dirTestDataSet = [dirbase, '\..\..\test'];
 
 % Path to the computed masks:
 dir_result_masks = [dirTestDataSet, '\result_masks'];
