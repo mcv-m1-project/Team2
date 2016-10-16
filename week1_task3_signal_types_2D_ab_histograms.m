@@ -117,13 +117,13 @@ second_max = max(max(hist_acc(hist_acc < first_max)));
 [second_max_i,second_max_j] = find (hist_acc==second_max);
 hist_filter = zeros(64,64);
 
-rad_blue = 15;
+rad_blue = 13;
 for i = max(first_max_i-rad_blue,1):min(first_max_i+rad_blue,64)
     for j = max(first_max_j-rad_blue,1):min(first_max_j+rad_blue,64)
         hist_filter(i,j) = 1;
     end
 end
-rad_red = 20;
+rad_red = 15;
 for i = max(second_max_i-rad_red,1):min(second_max_i+rad_red,64)
     for j = max(second_max_j-rad_red,1):min(second_max_j+rad_red,64)
         hist_filter(i,j) = 1;
@@ -153,7 +153,7 @@ for image = 1:trainSize
 %    figure,
 %    subplot(1,2,1), imshow(im_orig);
 %    subplot(1,2,2), imshow(mask, [0 1]);
-   imwrite(mask,[dirTrainDataSet '\result_mask\' trainSet{image} '.png']);
+   imwrite(mask,[dirTrainDataSet '\result_mask\2d_hist\' trainSet{image} '.png']);
 end
 
 
