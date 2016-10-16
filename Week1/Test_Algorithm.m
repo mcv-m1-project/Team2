@@ -1,21 +1,20 @@
 clear all
 close all
 % We add the path where some scripts are.
-addpath('evaluation\')
-addpath('colorspace\')
-addpath('..\train\')
+addpath('..\evaluation\')
+addpath('..\colorspace\')
+addpath('..\..\train\')
 
 % Base directory:
 dirbase = pwd;
 % Path to the training dataset images
-dirTrainDataSet = [dirbase, '\..\train'];
+dirTrainDataSet = [dirbase, '\..\..\train'];
 % Path to Ground Truth annotations:
 dirgt = [dirTrainDataSet, '\gt'];
 % Path to Masks:
 dirmask = [dirTrainDataSet, '\mask'];
 
-%Load variables from week1_task1 to save computation time
-week1_task1
+week1_task1(dirTrainDataSet, dirgt, dirmask);
 
 %Separate the train from the validation images
 [trainSet, validationSet] = train_validation_split(dirTrainDataSet, nrepetitions);

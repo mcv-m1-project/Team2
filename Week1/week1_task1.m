@@ -1,3 +1,5 @@
+function week1_task1(dirTrainDataSet, dirgt, dirmask)
+
 %%%%% MCV - M1
 %%%%% Project - Task 1
 %%%%% Xián López Álvarez
@@ -6,28 +8,13 @@
 %%%%% Modificado 10/10/2016
 %%%%% Recuento de la frecuencia de aparición de cada tipo de señal.
 
-% Base directory:
-dirbase = pwd;
-
-% Directory of the dataset (inside train):
-dirdataset = [dirbase, '\..\train'];
-
-% Path to Ground Truth annotations:
-dirgt = [dirdataset, '\gt'];
-
-% Path to Masks:
-dirmask = [dirdataset, '\mask'];
-
-% We add the path where some scripts are.
-addpath([dirbase, '\evaluation'])
-
 % Create lists with the ground truth annotations files, the mask files, and
 % the original image files:
-[gt_list, mask_list, image_list] = create_files_list(dirdataset);
+[gt_list, mask_list, image_list] = create_files_list(dirTrainDataSet);
 
 % We read the dataset, creating a vector of objects with all the
 % information about each signal:
-signals = create_signal_objects(dirgt, gt_list, dirmask, mask_list, dirdataset, image_list);
+signals = create_signal_objects(dirgt, gt_list, dirmask, mask_list, dirTrainDataSet, image_list);
 
 % To handle more easily the filling_ratio and the form_factor, we put them
 % in two vectors. By the way, we detect the signals that have no mask.
@@ -60,7 +47,6 @@ for i = 1:length(signals_list)
              min_size(i), max_size(i))
 end
 
-
 % Information about signal #46:
 fprintf('\nInformation about signal 46:\n')
 fprintf('Signal(46) type: %s.\n', signals(46).type)
@@ -68,7 +54,6 @@ fprintf('Signal(46) filling ratio: %f.\n', signals(46).filling_ratio)
 fprintf('Signal(46) form factor: %f.\n', signals(46).form_factor)
 fprintf('Signal(46), defined in file: %s.\n', signals(46).filename)
 fprintf('Signal(46), position in the file: %i.\n', signals(46).nos_infile)
-
 
 
 % Images:
@@ -142,6 +127,6 @@ imshow(signals(15).mask, [0, 1])
 subplot(4,4,16)
 imshow(signals(16).mask, [0, 1])
 
-
+end
 
 
