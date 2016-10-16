@@ -11,6 +11,7 @@ dirbase = pwd;
 dirTestDataSet = [dirbase, '\..\..\test'];
 
 % Path to the computed masks:
+mkdir([dirTestDataSet, '\result_masks']);
 dir_result_masks = [dirTestDataSet, '\result_masks'];
 
 %Load variables from week1_task1 to save computation time
