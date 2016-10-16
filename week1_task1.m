@@ -14,7 +14,7 @@ close all
 dirbase = pwd;
 
 % Directory of the dataset (inside train):
-dirdataset = [dirbase, '\..\DataSetDelivered\train'];
+dirdataset = [dirbase, '\..\train'];
 
 % Path to Ground Truth annotations:
 dirgt = [dirdataset, '\gt'];
@@ -50,6 +50,8 @@ signals = signals(filling_ratio ~= 0);
 
 % Calculate minimum and maximum size for each type of signal:
 [min_size, max_size] = get_min_max_size_bytypes(signals, signals_list, nrepetitions);
+
+save('signals_workspace');
 
 % Summary of signal types:
 fprintf('\nSummary of signal types:\n')
