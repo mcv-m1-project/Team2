@@ -1,14 +1,13 @@
-clear all
-close all
+function Color_segmentation(dirTestDataSet)
+%Color_segmentation
+%   Function that detects the position of traffic signal using color
+%   segmentation on the test data set
+%Parameters
+% dirTestDataSet - Path where the test data set is saved
+
 % We add the path where some scripts are.
 addpath('..\evaluation\')
 addpath('..\colorspace\')
-addpath('..\..\test\')
-
-% Base directory:
-dirbase = pwd;
-% Path to the test dataset images
-dirTestDataSet = [dirbase, '\..\..\test'];
 
 mkdir(dirTestDataSet, 'result_masks');
 % Path to the computed masks:
@@ -46,3 +45,4 @@ for idx = 3:size(test_images,1)-1
 end
 
 toc
+end

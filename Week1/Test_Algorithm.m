@@ -1,14 +1,14 @@
-clear all
-close all
+function Test_Algorithm(dirTrainDataSet)
+%Color_segmentation
+%   Function that trains and validates the system that detects the position 
+% of traffic signal using color segmentation on the train data set
+%Parameters
+% dirTrainDataSet - Path where the train data set is saved
+
 % We add the path where some scripts are.
 addpath('..\evaluation\')
 addpath('..\colorspace\')
-addpath('..\..\train\')
 
-% Base directory:
-dirbase = pwd;
-% Path to the training dataset images
-dirTrainDataSet = [dirbase, '\..\..\train'];
 % Path to Ground Truth annotations:
 dirgt = [dirTrainDataSet, '\gt'];
 % Path to Masks:
@@ -61,13 +61,4 @@ week1_task3_RBT_validation(dirTrainDataSet, validationSet)
 dirResult = [dirTrainDataSet '\result_mask\RBT\validation\' ];
 [precision_RBT,accuracy_RBT,recall_RBT,F_RBT,TP_RBT,FP_RBT,FN_RBT] = evaluation( dirGroundTruth, dirResult )
 
-
-
-
-
-
-
-
-
-
-
+end
