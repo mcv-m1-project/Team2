@@ -7,7 +7,7 @@ function week1_task3_signal_types_2D_ab_histograms_validation(dirTrainDataSet, v
 %       'validationSet' - Array of images used for validation
 
 % Initialize histograms and counters:
-
+tic
 hist_acc_filtered = load('2d_ab_histograms_filter');
 hist_acc_filtered = hist_acc_filtered.hist_acc_filtered;
 
@@ -34,5 +34,5 @@ for image = 1:validationSize
    imwrite(mask,[dirTrainDataSet '\result_mask\2d_hist\validation\' validationSet{image} '.png']);
 end
 
-
+toc
 end

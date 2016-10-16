@@ -7,6 +7,7 @@ function week1_task3_hand_picked_masks(dirTrainDataSet, trainSet)
 %       'trainSet' - Array of images used for training
 
 %Read train split images
+tic
 for image = 1:size(trainSet,2)
    im_orig = imread([dirTrainDataSet '\' trainSet{image} '.jpg']);
    B = double(im_orig)/255;
@@ -21,5 +22,5 @@ for image = 1:size(trainSet,2)
     % Write masks for every image of the train set
    imwrite(mask,[dirTrainDataSet '\result_mask\hand_picked\validation\' trainSet{image} '.png']);
 end
-
+toc
 end

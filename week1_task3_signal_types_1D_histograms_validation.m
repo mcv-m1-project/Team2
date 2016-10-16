@@ -7,7 +7,7 @@ function week1_task3_signal_types_1D_histograms_validation(dirTrainDataSet, vali
 %       'validationSet' - Array of images used for validation
 
 % Initialize histograms and counters:
-
+tic
 t_ch_a = load('1D_channel_a_threshold');
 t_ch_a = t_ch_a.t_ch_a;
 t_ch_b = load('1D_channel_b_threshold');
@@ -47,5 +47,5 @@ for image = 1:validationSize
 
 end
 
-
+toc
 end
