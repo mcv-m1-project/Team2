@@ -9,8 +9,13 @@ function [precision,accuracy,recall,F,TP,FP,FN] = evaluation( dirGroundTruth, di
 %       'dirResult' - Path where the obtained binary images are saved
 %
 %   Return
-%       'trainSet' - Vector contining the train set identifiers
-%       'validationSet' - Vector conteining the validation set identifiers
+%       'precision'
+%       'accuracy'
+%       'recall'
+%       'F' - F measure
+%       'TP' - True Positive mask
+%       'FP' - False Positive mask
+%       'FN' - False Negative mask
 
 images = dir(dirResult);
 TP = 0;
