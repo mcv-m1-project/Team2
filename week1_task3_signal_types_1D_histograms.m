@@ -7,7 +7,7 @@ function week1_task3_signal_types_1D_histograms(dirTrainDataSet, trainSet, signa
 %       'trainSet' - Array of images used for training
 %       'signals' - Array of objects with all the information about each signal
 
-
+tic
 bins = 256;
 % Initialize histograms and counters:
 hist_a_ch_a_acum=zeros(bins,1);
@@ -184,6 +184,8 @@ t_ch_a
 t_ch_b
 save('1D_channel_a_threshold', 't_ch_a');
 save('1D_channel_b_threshold', 't_ch_b');
+
+toc
 
 [unused,trainSize] = size(trainSet);
 for image = 1:trainSize 

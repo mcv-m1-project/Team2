@@ -8,6 +8,7 @@ function week1_task3_signal_types_2D_ab_histograms(dirTrainDataSet, trainSet, si
 %       'signals' - Array of objects with all the information about each signal
 
 % Initialize histograms and counters:
+tic
 hist_a_acc=zeros(64,64);
 hist_b_acc=zeros(64,64);
 hist_c_acc=zeros(64,64);
@@ -85,29 +86,29 @@ hist_d_acc = hist_d_acc./counter_type_d;
 hist_e_acc = hist_e_acc./counter_type_e;
 hist_f_acc = hist_f_acc./counter_type_f;
 
-fprintf('Number of A type signals processed: %d\n', counter_type_a)
-fprintf('Number of B type signals processed: %d\n', counter_type_b)
-fprintf('Number of C type signals processed: %d\n', counter_type_c)
-fprintf('Number of D type signals processed: %d\n', counter_type_d)
-fprintf('Number of E type signals processed: %d\n', counter_type_e)
-fprintf('Number of F type signals processed: %d\n', counter_type_f)
-
-figure, bar3(hist_a_acc), title('A'), xlabel('a component'), ylabel('b component')
-figure, bar3(hist_b_acc), title('B'), xlabel('a component'), ylabel('b component')
-figure, bar3(hist_c_acc), title('C'), xlabel('a component'), ylabel('b component')
-figure, bar3(hist_d_acc), title('D'), xlabel('a component'), ylabel('b component')
-figure, bar3(hist_e_acc), title('E'), xlabel('a component'), ylabel('b component')
-figure, bar3(hist_f_acc), title('F'), xlabel('a component'), ylabel('b component')
-
-figure, subplot(2,3,1), imagesc(hist_a_acc), title('A'), xlabel('a component'), ylabel('b component')
-subplot(2,3,2), imagesc(hist_b_acc), title('B'), xlabel('a component'), ylabel('b component')
-subplot(2,3,3), imagesc(hist_c_acc), title('C'), xlabel('a component'), ylabel('b component')
-subplot(2,3,4), imagesc(hist_d_acc), title('D'), xlabel('a component'), ylabel('b component')
-subplot(2,3,5), imagesc(hist_e_acc), title('E'), xlabel('a component'), ylabel('b component')
-subplot(2,3,6), imagesc(hist_f_acc), title('F'), xlabel('a component'), ylabel('b component')
+% fprintf('Number of A type signals processed: %d\n', counter_type_a)
+% fprintf('Number of B type signals processed: %d\n', counter_type_b)
+% fprintf('Number of C type signals processed: %d\n', counter_type_c)
+% fprintf('Number of D type signals processed: %d\n', counter_type_d)
+% fprintf('Number of E type signals processed: %d\n', counter_type_e)
+% fprintf('Number of F type signals processed: %d\n', counter_type_f)
+% 
+% figure, bar3(hist_a_acc), title('A'), xlabel('a component'), ylabel('b component')
+% figure, bar3(hist_b_acc), title('B'), xlabel('a component'), ylabel('b component')
+% figure, bar3(hist_c_acc), title('C'), xlabel('a component'), ylabel('b component')
+% figure, bar3(hist_d_acc), title('D'), xlabel('a component'), ylabel('b component')
+% figure, bar3(hist_e_acc), title('E'), xlabel('a component'), ylabel('b component')
+% figure, bar3(hist_f_acc), title('F'), xlabel('a component'), ylabel('b component')
+% 
+% figure, subplot(2,3,1), imagesc(hist_a_acc), title('A'), xlabel('a component'), ylabel('b component')
+% subplot(2,3,2), imagesc(hist_b_acc), title('B'), xlabel('a component'), ylabel('b component')
+% subplot(2,3,3), imagesc(hist_c_acc), title('C'), xlabel('a component'), ylabel('b component')
+% subplot(2,3,4), imagesc(hist_d_acc), title('D'), xlabel('a component'), ylabel('b component')
+% subplot(2,3,5), imagesc(hist_e_acc), title('E'), xlabel('a component'), ylabel('b component')
+% subplot(2,3,6), imagesc(hist_f_acc), title('F'), xlabel('a component'), ylabel('b component')
 
 hist_acc = hist_a_acc + hist_b_acc + hist_c_acc + hist_d_acc + hist_e_acc + hist_f_acc;
-figure, bar3(hist_acc), title('global'), xlabel('a component'), ylabel('b component')
+% figure, bar3(hist_acc), title('global'), xlabel('a component'), ylabel('b component')
 
 first_max = max(max(hist_acc));
 [first_max_i,first_max_j] = find (hist_acc==first_max);
@@ -129,8 +130,10 @@ for i = max(second_max_i-rad_red,1):min(second_max_i+rad_red,64)
 end
 
 hist_acc_filtered = hist_acc.*hist_filter;
-figure, bar3(hist_acc_filtered), title('filtered'), xlabel('a component'), ylabel('b component')
+% figure, bar3(hist_acc_filtered), title('filtered'), xlabel('a component'), ylabel('b component')
 save('2d_ab_histograms_filter', 'hist_acc_filtered');
+
+toc
 
 [unused,trainSize] = size(trainSet);
 for image = 1:trainSize
