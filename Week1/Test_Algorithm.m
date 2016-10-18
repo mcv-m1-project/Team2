@@ -30,15 +30,15 @@ week1_task3_hand_picked_masks(dirTrainDataSet, validationSet)
 dirResult = [dirTrainDataSet '\result_mask\hand_picked\validation\' ];
 [precision_hand,accuracy_hand,recall_hand,F_hand,TP_hand,FP_hand,FN_hand] = evaluation( dirGroundTruth, dirResult )
 
-% Lab Color Space 1D Histogram Method
-mkdir([dirTrainDataSet '\result_mask\1D_histogram\train\' ]);
-week1_task3_signal_types_1D_histograms(dirTrainDataSet, trainSet, signals)
-% % Save the validation split result masks
-mkdir([dirTrainDataSet '\result_mask\1D_histogram\validation\' ]);
-week1_task3_signal_types_1D_histograms_validation(dirTrainDataSet, validationSet)
-
-dirResult = [dirTrainDataSet '\result_mask\1D_histogram\validation\' ];
-[precision_1d_hist,accuracy_1d_hist,recall_1d_hist,F_1d_hist,TP_1d_hist,FP_1d_hist,FN_1d_hist] = evaluation( dirGroundTruth, dirResult )
+% % Lab Color Space 1D Histogram Method
+% mkdir([dirTrainDataSet '\result_mask\1D_histogram\train\' ]);
+% week1_task3_signal_types_1D_histograms(dirTrainDataSet, trainSet, signals)
+% % % Save the validation split result masks
+% mkdir([dirTrainDataSet '\result_mask\1D_histogram\validation\' ]);
+% week1_task3_signal_types_1D_histograms_validation(dirTrainDataSet, validationSet)
+% 
+% dirResult = [dirTrainDataSet '\result_mask\1D_histogram\validation\' ];
+% [precision_1d_hist,accuracy_1d_hist,recall_1d_hist,F_1d_hist,TP_1d_hist,FP_1d_hist,FN_1d_hist] = evaluation( dirGroundTruth, dirResult )
 
 % Lab Color Space 2D Histogram Method
 % Execute the method once to obtain the desired thresholds using the train split
