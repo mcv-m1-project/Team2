@@ -1,4 +1,4 @@
-function b = backprojection_swainballard_run(image, M, gridx, gridy, colorspace, r)
+function b = backprojection_swainballard_run(image, M, stepx, stepy, gridx, gridy, colorspace, r)
 
 
 % Transform data to specified color space:
@@ -44,11 +44,14 @@ if(strcmp(colorspace, 'lab'))
     for i = 1:nrow
         for j = 1:ncol
             % Find position in R for pixel (i,j) of the image:
-            [~, idxgridx] = min(abs(image_cs(i,j,2) - gridx));
-            [~, idxgridy] = min(abs(image_cs(i,j,3) - gridy));
+            idxgridx = round(1 + (image_cs(i,j,2) - gridx(1)) / stepx);
+            idxgridy = round(1 + (image_cs(i,j,3) - gridy(1)) / stepy);
             bprime(i,j) = min(R(idxgridx, idxgridy), 1);
         end
     end
+    
+else
+    error('PART INCOMPLETE')
 end
 
 % We definde the disk of radius r:

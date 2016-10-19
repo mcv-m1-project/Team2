@@ -6,7 +6,7 @@ fprintf('\nComputing kernel density estimation...\n')
 npixelstotal = size(X, 1);
 if(percen_data ~= 100)
     sizereduced = round(percen_data / 100 * npixelstotal);
-    Xreduced = zeros(sizereduced, 2);
+    Xreduced = zeros(sizereduced, 3);
     for i = 1:sizereduced
         n = floor(rand() * npixelstotal) + 1;
         Xreduced(i,:) = X(n,:);
@@ -41,7 +41,7 @@ for i = 1:nbinsx
         y = gridy(j);
         fhat(i,j) = 0;
         for pixel = 1:npixels
-            fhat(i,j) = fhat(i,j) + kernel(([x, y] - Xreduced(pixel,:)) / sqrt(h));
+            fhat(i,j) = fhat(i,j) + kernel(([x, y] - X(pixel,:)) / sqrt(h));
         end
         fhat(i,j) = fhat(i,j) / (npixels * h);
     end

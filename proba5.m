@@ -39,13 +39,14 @@ colorspace = 'lab';
 r = 2;
 
 % Training backprojection:
-% M = backprojection_swainballard_train(signals, gridx, gridy, colorspace);
-% save('bp_sb_M', 'M')
-load('bp_sb_M.mat')
+% R = backprojection_sb_mod_train(signals, gridx, gridy, colorspace, ...
+%                     image_list, dirimage, mask_list, dirmask);
+% save('bp_sb_mod_R', 'R')
+load('bp_sb_mod_R.mat')
 
 figure()
-imshow(M, [min(min(M)), max(max(M))])
-title('Model histogram')
+imshow(R, [min(min(R)), max(max(R))])
+title('Ratio of histograms')
 
 figure()
 % Loop over images:
@@ -53,7 +54,7 @@ for i = 1:length(image_list)
     n = floor(rand() * length(image_list)) + 1;
     file = [dirimage, '\', image_list{n}];
     image = imread(file);
-    b = backprojection_swainballard_run(image, M, stepx, stepy, gridx, gridy, colorspace, r);
+    b = backprojection_sb_mod_run(image, R, stepx, stepy, gridx(1), gridy(1), colorspace, r);
     title(file)
     subplot(1,2,1)
     imshow(image)

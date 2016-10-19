@@ -1,5 +1,6 @@
-function R = backprojection_sb_mod_train(signals, gridx, gridy, colorspace, ...
-                                image_list, dirimage, mask_list, dirmask)
+function R = backprojection_kde_train(signals, gridx, gridy, colorspace, ...
+                                image_list, dirimage, mask_list, dirmask, ...
+                                percen_data, kernelname, h)
 
 
 % Create matrices with pixels in and outside signals:
@@ -22,8 +23,8 @@ else
     error('Color space not recognized.')
 end
 
-% Compute histogram of model:
-M = hist3(Xin_cs, [{gridx}, {gridy}]);
+% Compute density estimation of model:
+M = kde2d(Xin_cs, h, kernelname, gridx, gridy, percen_data);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -43,7 +44,7 @@ else
 end
 
 % Compute histogram of complementary of model:
-C = hist3(Xout_cs, [{gridx}, {gridy}]);
+C = kde2d(Xout_cs, h, kernelname, gridx, gridy, percen_data);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
