@@ -28,7 +28,7 @@ for i = 1:nbinsx
         y = gridy(j);
         fhat(i,j) = 0;
         for pixel = 1:npixels
-            fhat(i,j) = fhat(i,j) + kernel(([x, y] - X(pixel,:)) / h);
+            fhat(i,j) = fhat(i,j) + kernel(([x, y] - X(pixel,:)) / sqrt(h));
         end
         fhat(i,j) = fhat(i,j) / (npixels * h);
     end
@@ -43,7 +43,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function K = kde_naive(x)
 
-K = (abs(x(1)) < 1) * (abs(x(2)) < 1) / 4;
+K = (abs(x(1)) < 0.5) * (abs(x(2)) < 0.5);
 
 return
 
