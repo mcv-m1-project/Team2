@@ -1,9 +1,18 @@
 % Tests
 
+close all
 % We add the path where some scripts are.
 addpath('..\')
-%addpath('..\colorspace\')
+addpath('..\Week1\')
+addpath('..\evaluation\')
+dirTrainDataSet = [pwd, '\..\..\train'];
 
-dirMask = [pwd, '\..\..\train\result_mask\RBT\validation'];
+get_signals_main_parameters(dirTrainDataSet, [dirTrainDataSet, '\gt'], [dirTrainDataSet, '\mask']);
+load('signals_info.mat');
 
-outMasksDir = week2_task_3_apply_morphological_operators(dirMask);
+%Path to the masks where to apply the morphological operators
+dirMask_MO = [pwd, '\..\..\train\result_mask\RBT\validation'];
+%Train truth masks
+dirGroundTruthMask = [pwd '\..\..\train\mask'];
+
+outMasksDir = week2_task_3_apply_morphological_operators(dirMask_MO, dirGroundTruthMask);

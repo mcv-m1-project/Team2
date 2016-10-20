@@ -7,6 +7,19 @@ function out_mask = apply_morphological_operators(in_mask)
 %   Return
 %       'out_mask' - Output mask image
 
-out_mask = in_mask;
+%subplot(2,2,1), imshow(in_mask, [0,1]), title('input mask')
+
+%Apply imclose first to define better the signal borders
+se = strel('square', 5);
+out_mask = imclose(in_mask, se);
+%subplot(2,2,2), imshow(out_mask, [0,1]), title('imclose 10')
+
+%Fill image holes
+out_mask = imfill(out_mask,'holes');
+%subplot(2,2,3), imshow(out_mask, [0,1]), title('fill')
+
+%Binary open of a 600 pixel region
+out_mask = bwareaopen(out_mask, 600);
+%subplot(2,2,4), imshow(out_mask, [0,1]), title('bwareaopen')
 
 end
