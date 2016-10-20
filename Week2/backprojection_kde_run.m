@@ -1,5 +1,4 @@
-function b = backprojection_kde_run(image, R, stepx, stepy, ...
-                                    gridx0, gridy0, colorspace, r)
+function mask = backprojection_kde_run(image, R, gridx, gridy, colorspace, r, prctile_ths)
 
 
 % Transform data to specified color space:
@@ -12,6 +11,8 @@ else
 end
 
 % Taking the minimum with the image:
+stepx = gridx(2) - gridx(1);
+stepy = gridy(2) - gridy(1);
 nrow = size(image_cs, 1);
 ncol = size(image_cs, 2);
 bprime = zeros(nrow, ncol);
@@ -19,8 +20,8 @@ if(strcmp(colorspace, 'lab'))
     for i = 1:nrow
         for j = 1:ncol
             % Find position in R for pixel (i,j) of the image:
-            idxgridx = round(1 + (image_cs(i,j,2) - gridx0) / stepx);
-            idxgridy = round(1 + (image_cs(i,j,3) - gridy0) / stepy);
+            idxgridx = round(1 + (image_cs(i,j,2) - gridx(1)) / stepx);
+            idxgridy = round(1 + (image_cs(i,j,3) - gridy(1)) / stepy);
             bprime(i,j) = min(R(idxgridx, idxgridy), 1);
         end
     end
@@ -40,7 +41,11 @@ for i = 1:(2*r+1)
 end
 
 % Convolution:
-b = conv2(bprime, D);
+b = conv2(bprime, D, 'same');
+
+% Thresholding:
+threshold = max(max(prctile(b, prctile_ths)));
+mask = b > threshold;
 
 return
 

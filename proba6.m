@@ -23,20 +23,13 @@ load('signals_workspace');
 % Files lists:
 [gt_list, mask_list, image_list] = ls_create_files_list(dirimage);
 
-% Grids:
-nbins = 100;
-minx = -128;
-maxx = 128;
-miny = -128;
-maxy = 128;
-stepx = (maxx - minx) / (nbins - 1);
-stepy = (maxy - miny) / (nbins - 1);
-gridx = minx:stepx:maxx;
-gridy = miny:stepy:maxy;
-
 % Parameters:
 colorspace = 'lab';
 r = 2;
+
+% Grids:
+nbins = 100;
+[gridx, gridy] = histograms_create_grids(nbins, colorspace);
 
 % Training backprojection:
 % percen_data = 0.01;
@@ -58,7 +51,7 @@ for i = 1:length(image_list)
     n = floor(rand() * length(image_list)) + 1;
     file = [dirimage, '\', image_list{n}];
     image = imread(file);
-    b = backprojection_kde_run(image, R, stepx, stepy, gridx(1), gridy(1), colorspace, r);
+    b = backprojection_kde_run(image, R, gridx, gridy, colorspace, r);
     title(file)
     subplot(1,2,1)
     imshow(image)

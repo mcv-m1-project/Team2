@@ -1,10 +1,7 @@
-function R = backprojection_kde_train(signals, gridx, gridy, colorspace, ...
-                                image_list, dirimage, mask_list, dirmask, ...
-                                percen_data, kernelname, h)
+function R = backprojection_kde_train2(gridx, gridy, colorspace, ...
+                                percen_data, kernelname, h, Xin, Xout)
 
 
-% Create matrices with pixels in and outside signals:
-[Xin, Xout] = create_Xin_Xout(signals, image_list, dirimage, mask_list, dirmask);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
