@@ -22,6 +22,7 @@ for idx1 = 1:length(nbins_vec)
                         r_lab_max = r_vec(idx3);
                         prctile_ths_lab_max = prctile_ths_vec(idx4);
                         max_precision_lab = precision_array(idx1, idx2, idx3, idx4);
+                        recall_lab = recall_array(idx1, idx2, idx3, idx4);
                     end
                 end
             end
@@ -29,6 +30,7 @@ for idx1 = 1:length(nbins_vec)
     end
 end
 fprintf('\nMaximum precision found with lab: %f\n', max_precision_lab)
+fprintf('Recall = %f\n', recall_lab)
 fprintf('Corresponds to the following parameters:\n')
 fprintf('nbins = %i\n', nbins_lab_max)
 fprintf('h = %i\n', h_lab_max)
@@ -58,6 +60,7 @@ for idx1 = 1:length(nbins_vec)
                         r_hsv_max = r_vec(idx3);
                         prctile_ths_hsv_max = prctile_ths_vec(idx4);
                         max_precision_hsv = precision_array(idx1, idx2, idx3, idx4);
+                        recall_hsv = recall_array(idx1, idx2, idx3, idx4);
                     end
                 end
             end
@@ -65,6 +68,7 @@ for idx1 = 1:length(nbins_vec)
     end
 end
 fprintf('Maximum precision found with hsv: %f\n', max_precision_hsv)
+fprintf('Recall = %f\n', recall_hsv)
 fprintf('Corresponds to the following parameters:\n')
 fprintf('nbins = %i\n', nbins_hsv_max)
 fprintf('h = %i\n', h_hsv_max)
