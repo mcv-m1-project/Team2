@@ -60,13 +60,13 @@ kernelname = 'gaussian';
 
 % Tuning parameters:
 % Number of bins of histograms:
-nbins_vec = [25 50 100];
+nbins_vec = [75, 125];
 % Smothing parameter of KDE:
-h_vec = [8, 10];
+h_vec = [10, 15, 20, 25];
 % Size of convolution disk:
 r_vec = [20];
 % Threshold for binarizing:
-prctile_ths_vec = [85, 90, 95];
+prctile_ths_vec = [80, 90];
 
 lgth_nbins = length(nbins_vec);
 lgth_h = length(h_vec);
