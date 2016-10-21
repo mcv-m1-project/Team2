@@ -7,14 +7,14 @@ close all
 % Base path:
 dirbase = pwd;
 % Path do data set:
-dirimage = [dirbase, '\..\train'];
+dirimage = [dirbase, '\..\..\train'];
 % Path to Ground Truth annotations:
 dirgt = [dirimage, '\gt'];
 % Path to Masks:
 dirmask = [dirimage, '\mask'];
 
 % We add the path where some scripts are.
-addpath([dirbase, '\evaluation\'])
+addpath([dirbase, '\..\evaluation\'])
 
 % Load signals vector.
 load('signals_workspace');
@@ -62,13 +62,13 @@ kernelname = 'gaussian';
 % Number of bins of histograms:
 nbins_vec = [25 50 100];
 % Smothing parameter of KDE:
-% h_vec = [5, 8, 10];
-h_vec = [8];
+h_vec = [5, 8, 10];
+% h_vec = [8];
 % Size of convolution disk:
 r_vec = [5 10 20];
 % Threshold for binarizing:
-% prctile_ths_vec = [70, 80, 90, 95];
-prctile_ths_vec = [90, 95];
+prctile_ths_vec = [70, 80, 90, 95];
+% prctile_ths_vec = [90, 95];
 
 lgth_nbins = length(nbins_vec);
 lgth_h = length(h_vec);

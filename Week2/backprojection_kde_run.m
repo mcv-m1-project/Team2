@@ -26,8 +26,18 @@ if(strcmp(colorspace, 'lab'))
         end
     end
     
+elseif(strcmp(colorspace, 'hsv'))
+    for i = 1:nrow
+        for j = 1:ncol
+            % Find position in R for pixel (i,j) of the image:
+            idxgridx = round(1 + (image_cs(i,j,1) - gridx(1)) / stepx);
+            idxgridy = round(1 + (image_cs(i,j,2) - gridy(1)) / stepy);
+            bprime(i,j) = min(R(idxgridx, idxgridy), 1);
+        end
+    end
+    
 else
-    error('PART INCOMPLETE')
+    error('Color space not recognized.')
 end
 
 % We definde the disk of radius r:
