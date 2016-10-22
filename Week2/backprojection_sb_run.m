@@ -80,7 +80,8 @@ end
 b = conv2(bprime, D, 'same');
 
 % Thresholding:
-threshold = max(max(prctile(b, prctile_ths)));
+aux = b(:);
+threshold = prctile(aux, prctile_ths);
 mask = b > threshold;
 
 return

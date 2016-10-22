@@ -13,9 +13,9 @@ if(strcmp(colorspace, 'lab'))
     
 elseif(strcmp(colorspace, 'hsv'))
     minx = 0;
-    maxx = 360;
+    maxx = 1;
     miny = 0;
-    maxy = 100;
+    maxy = 1;
     stepx = (maxx - minx) / (nbins - 1);
     stepy = (maxy - miny) / (nbins - 1);
     gridx = minx:stepx:maxx;
@@ -24,11 +24,6 @@ elseif(strcmp(colorspace, 'hsv'))
 else
     error('Color space not recognized.')
 end
-
-
-
-
-
 
 return
 

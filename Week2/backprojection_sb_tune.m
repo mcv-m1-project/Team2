@@ -72,7 +72,7 @@ end
 
 % Tuning parameters:
 % Number of bins of histograms:
-nbins_vec = [25, 50, 100, 150, 200];
+nbins_vec = [10, 15, 25, 50];
 % nbins_vec = [25, 50];
 % Threshold for binarizing:
 prctile_ths_vec = [70, 75, 80, 85, 90, 95];

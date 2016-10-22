@@ -2,14 +2,13 @@ function backprojection_kde_train_final(train_signals, train_image_list, dirimag
 
 % Load parameters:
 load('bp_kde_params.mat')
-r = params.r;
 h = params.h;
 colorspace = params.colorspace;
 prctile_ths = params.prctile_ths;
-nbins = params.nbins;
+nbins = 50;
 
 % Fixed parameters:
-percen_data = 0.5;
+percen_data = 2;
 kernelname = 'gaussian';
 
 % Create matrices with pixels in and outside signals:
@@ -22,7 +21,7 @@ kernelname = 'gaussian';
 R = backprojection_kde_train(gridx, gridy, colorspace, percen_data, kernelname, h, Xin, Xout, 1);
 
 % Save result:
-save('bp_kde_final.mat', 'R', 'gridx', 'gridy', 'r', 'colorspace', 'prctile_ths')
+save('bp_kde_final.mat', 'R', 'gridx', 'gridy', 'colorspace', 'prctile_ths')
 
 return
 

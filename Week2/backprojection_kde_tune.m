@@ -68,20 +68,20 @@ for i = 1:nvalidation
 end
 
 % Fixed parameters:
-percen_data = 0.02;
+percen_data = 0.2;
 kernelname = 'gaussian';
-nbins = 200;
+nbins = 50;
 
 % Create matrices with pixels in and outside train signals:
 [Xin, Xout] = create_Xin_Xout(train_signals, train_image_list, dirimage, train_mask_list, dirmask);
 
 % Tuning parameters:
-% Smothing parameter of KDE:
-h_vec = [15, 20, 25];
-% h_vec = [15, 20];
 % Threshold for binarizing:
 prctile_ths_vec = [70, 75, 80, 85, 90, 95];
-% prctile_ths_vec = [70, 75];
+% prctile_ths_vec = [80, 90];
+% Smothing parameter of KDE:
+h_vec = [15, 20, 25];
+% h_vec = [15];
 
 lgth_h = length(h_vec);
 lgth_prctile_ths = length(prctile_ths_vec);
@@ -152,6 +152,12 @@ save('bp_kde_tuning_lab', 'precision_array', 'recall_array', 'h_vec', 'prctile_t
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % hsv colorspace.
 colorspace = 'hsv';
+
+% Tuning parameters:
+% Smothing parameter of KDE:
+h_vec = [0.03 0.05 0.07];
+% h_vec = [15];
+lgth_h = length(h_vec);
 
 % Arrays of evaluation results:
 precision_array = zeros(lgth_h, lgth_prctile_ths);

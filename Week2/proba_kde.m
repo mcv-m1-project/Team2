@@ -61,7 +61,7 @@ load('bp_kde_final.mat')
 n = floor(rand()*length(validationSet)) + 1;
 imagefile = [dirimage, '\', validationSet{n}, '.jpg'];
 image = imread(imagefile);
-mask = backprojection_kde_run(image, R, gridx, gridy, colorspace, r, prctile_ths);
+mask = backprojection_kde_run(image, R, gridx, gridy, colorspace, prctile_ths);
 figure()
 subplot(1,2,1)
 imshow(image)

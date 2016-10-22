@@ -72,77 +72,80 @@ end
 
 % Tuning parameters:
 % Number of bins of histograms:
-nbins_vec = [10, 15, 25, 50];
-% nbins_vec = [25];
+nbins_vec = [25, 50, 100, 150, 200];
+% nbins_vec = [25, 50];
 % Threshold for binarizing:
 prctile_ths_vec = [70, 75, 80, 85, 90, 95];
-% prctile_ths_vec = [70];
+% prctile_ths_vec = [70, 75];
+
+% Other parameters:
+r = 5;
 
 lgth_nbins = length(nbins_vec);
 lgth_prctile_ths = length(prctile_ths_vec);
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Lab colorspace.
-colorspace = 'lab';
-
-% Arrays of evaluation results:
-precision_array = zeros(lgth_nbins, lgth_prctile_ths);
-recall_array = zeros(lgth_nbins, lgth_prctile_ths);
-
-for idx1 = 1:lgth_nbins
-    nbins = nbins_vec(idx1);
-    for idx2 = 1:lgth_prctile_ths
-        prctile_ths = prctile_ths_vec(idx2);
-
-        % Display progess information:
-        fprintf('\n (%i/%i) nbins = %i\n (%i/%i) prctile_ths = %f\n', ...
-            idx1, lgth_nbins, nbins, idx2, lgth_prctile_ths, prctile_ths)
-
-        % Grids:
-        [gridx, gridy] = histograms_create_grids(nbins, colorspace);
-
-        % Training backprojection:
-        R = backprojection_mod_train(gridx, gridy, colorspace, Xin, Xout, 0);
-
-        % Loop over validation images:
-        TPacum = 0;
-        FPacum = 0;
-        FNacum = 0;
-        TNacum = 0;
-        fprintf('\nComputing precision and recall...\n')
-        progress = 10;
-        fprintf('Completado 0%%\n')
-        for i = 1:nvalidation
-            if(i > progress / 100 * nvalidation)
-                fprintf('Completado %i%%\n', progress)
-                progress = progress + 10;
-            end
-            % Computed mask:
-            computed_mask = backprojection_mod_run(validation_images{i}, R, ...
-                                gridx, gridy, colorspace, prctile_ths);
-            % Performance evaluation:
-            [TP, FP, FN, TN] = PerformanceAccumulationPixel(computed_mask, validation_masks{i});
-            TPacum = TPacum + TP;
-            FPacum = FPacum + FP;
-            FNacum = FNacum + FN;
-            TNacum = TNacum + TN;
-        end
-        fprintf('Completado 100%%\n\n')
-
-        % Computing statistics:
-        % Precision:
-        precision_array(idx1, idx2) = TPacum / (TPacum + FPacum);
-        % Recall:
-        recall_array(idx1, idx2) = TPacum / (TPacum + FNacum);
-    end
-
-end
-
-% Storing arrays with statistics:
-save('bp_mod_tuning_lab', 'precision_array', 'recall_array', 'nbins_vec', 'prctile_ths_vec');
-
-
+% 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % Lab colorspace.
+% colorspace = 'lab';
+% 
+% % Arrays of evaluation results:
+% precision_array = zeros(lgth_nbins, lgth_prctile_ths);
+% recall_array = zeros(lgth_nbins, lgth_prctile_ths);
+% 
+% for idx1 = 1:lgth_nbins
+%     nbins = nbins_vec(idx1);
+%     for idx2 = 1:lgth_prctile_ths
+%         prctile_ths = prctile_ths_vec(idx2);
+% 
+%         % Display progess information:
+%         fprintf('\n (%i/%i) nbins = %i\n (%i/%i) prctile_ths = %f\n', ...
+%             idx1, lgth_nbins, nbins, idx2, lgth_prctile_ths, prctile_ths)
+% 
+%         % Grids:
+%         [gridx, gridy] = histograms_create_grids(nbins, colorspace);
+% 
+%         % Training backprojection:
+%         M = backprojection_sb_train(gridx, gridy, colorspace, Xin, 0);
+% 
+%         % Loop over validation images:
+%         TPacum = 0;
+%         FPacum = 0;
+%         FNacum = 0;
+%         TNacum = 0;
+%         fprintf('\nComputing precision and recall...\n')
+%         progress = 10;
+%         fprintf('Completado 0%%\n')
+%         for i = 1:nvalidation
+%             if(i > progress / 100 * nvalidation)
+%                 fprintf('Completado %i%%\n', progress)
+%                 progress = progress + 10;
+%             end
+%             % Computed mask:
+%             computed_mask = backprojection_sb_run(validation_images{i}, M, ...
+%                                 gridx, gridy, colorspace, r, prctile_ths);
+%             % Performance evaluation:
+%             [TP, FP, FN, TN] = PerformanceAccumulationPixel(computed_mask, validation_masks{i});
+%             TPacum = TPacum + TP;
+%             FPacum = FPacum + FP;
+%             FNacum = FNacum + FN;
+%             TNacum = TNacum + TN;
+%         end
+%         fprintf('Completado 100%%\n\n')
+% 
+%         % Computing statistics:
+%         % Precision:
+%         precision_array(idx1, idx2) = TPacum / (TPacum + FPacum);
+%         % Recall:
+%         recall_array(idx1, idx2) = TPacum / (TPacum + FNacum);
+%     end
+% 
+% end
+% 
+% % Storing arrays with statistics:
+% save('bp_sb_tuning_lab', 'precision_array', 'recall_array', 'nbins_vec', 'prctile_ths_vec');
+% 
+% 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % hsv colorspace.
@@ -165,7 +168,7 @@ for idx1 = 1:lgth_nbins
         [gridx, gridy] = histograms_create_grids(nbins, colorspace);
 
         % Training backprojection:
-        R = backprojection_mod_train(gridx, gridy, colorspace, Xin, Xout, 0);
+        M = backprojection_sb_train(gridx, gridy, colorspace, Xin, 0);
 
         % Loop over validation images:
         TPacum = 0;
@@ -181,8 +184,8 @@ for idx1 = 1:lgth_nbins
                 progress = progress + 10;
             end
             % Computed mask:
-            computed_mask = backprojection_mod_run(validation_images{i}, R, ...
-                                gridx, gridy, colorspace, prctile_ths);
+            computed_mask = backprojection_sb_run(validation_images{i}, M, ...
+                                gridx, gridy, colorspace, r, prctile_ths);
             % Performance evaluation:
             [TP, FP, FN, TN] = PerformanceAccumulationPixel(computed_mask, validation_masks{i});
             TPacum = TPacum + TP;
@@ -202,6 +205,6 @@ for idx1 = 1:lgth_nbins
 end
 
 % Storing arrays with statistics:
-save('bp_mod_tuning_hsv', 'precision_array', 'recall_array', 'nbins_vec', 'prctile_ths_vec');
+save('bp_sb_tuning_hsv', 'precision_array', 'recall_array', 'nbins_vec', 'prctile_ths_vec');
 
 
