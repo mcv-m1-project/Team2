@@ -67,23 +67,18 @@ for i = 1:nvalidation
     validation_masks{i} = imread(maskfile);
 end
 
-% Fixed parameters:
-percen_data = 0.02;
-kernelname = 'gaussian';
-nbins = 200;
-
 % Create matrices with pixels in and outside train signals:
 [Xin, Xout] = create_Xin_Xout(train_signals, train_image_list, dirimage, train_mask_list, dirmask);
 
 % Tuning parameters:
-% Smothing parameter of KDE:
-h_vec = [15, 20, 25];
-% h_vec = [15, 20];
+% Number of bins of histograms:
+nbins_vec = [25, 50, 100, 150, 200];
+% nbins_vec = [25];
 % Threshold for binarizing:
 prctile_ths_vec = [70, 75, 80, 85, 90, 95];
-% prctile_ths_vec = [70, 75];
+% prctile_ths_vec = [70];
 
-lgth_h = length(h_vec);
+lgth_nbins = length(nbins_vec);
 lgth_prctile_ths = length(prctile_ths_vec);
 
 
@@ -92,24 +87,23 @@ lgth_prctile_ths = length(prctile_ths_vec);
 colorspace = 'lab';
 
 % Arrays of evaluation results:
-precision_array = zeros(lgth_h, lgth_prctile_ths);
-recall_array = zeros(lgth_h, lgth_prctile_ths);
+precision_array = zeros(lgth_nbins, lgth_prctile_ths);
+recall_array = zeros(lgth_nbins, lgth_prctile_ths);
 
-for idx1 = 1:lgth_h
-    h = h_vec(idx1);
+for idx1 = 1:lgth_nbins
+    nbins = nbins_vec(idx1);
     for idx2 = 1:lgth_prctile_ths
         prctile_ths = prctile_ths_vec(idx2);
 
         % Display progess information:
-        fprintf('\n (%i/%i) h = %i\n (%i/%i) prctile_ths = %f\n', ...
-            idx1, lgth_h, h, idx2, lgth_prctile_ths, prctile_ths)
+        fprintf('\n (%i/%i) nbins = %i\n (%i/%i) prctile_ths = %f\n', ...
+            idx1, lgth_nbins, nbins, idx2, lgth_prctile_ths, prctile_ths)
 
         % Grids:
         [gridx, gridy] = histograms_create_grids(nbins, colorspace);
 
         % Training backprojection:
-        R = backprojection_kde_train(gridx, gridy, colorspace, ...
-                            percen_data, kernelname, h, Xin, Xout, 0);
+        R = backprojection_mod_train(gridx, gridy, colorspace, Xin, Xout, 0);
 
         % Loop over validation images:
         TPacum = 0;
@@ -125,7 +119,7 @@ for idx1 = 1:lgth_h
                 progress = progress + 10;
             end
             % Computed mask:
-            computed_mask = backprojection_kde_run(validation_images{i}, R, ...
+            computed_mask = backprojection_mod_run(validation_images{i}, R, ...
                                 gridx, gridy, colorspace, prctile_ths);
             % Performance evaluation:
             [TP, FP, FN, TN] = PerformanceAccumulationPixel(computed_mask, validation_masks{i});
@@ -142,10 +136,11 @@ for idx1 = 1:lgth_h
         % Recall:
         recall_array(idx1, idx2) = TPacum / (TPacum + FNacum);
     end
+
 end
 
 % Storing arrays with statistics:
-save('bp_kde_tuning_lab', 'precision_array', 'recall_array', 'h_vec', 'prctile_ths_vec');
+save('bp_mod_tuning_lab', 'precision_array', 'recall_array', 'nbins_vec', 'prctile_ths_vec');
 
 
 
@@ -154,24 +149,23 @@ save('bp_kde_tuning_lab', 'precision_array', 'recall_array', 'h_vec', 'prctile_t
 colorspace = 'hsv';
 
 % Arrays of evaluation results:
-precision_array = zeros(lgth_h, lgth_prctile_ths);
-recall_array = zeros(lgth_h, lgth_prctile_ths);
+precision_array = zeros(lgth_nbins, lgth_prctile_ths);
+recall_array = zeros(lgth_nbins, lgth_prctile_ths);
 
-for idx1 = 1:lgth_h
-    h = h_vec(idx1);
+for idx1 = 1:lgth_nbins
+    nbins = nbins_vec(idx1);
     for idx2 = 1:lgth_prctile_ths
         prctile_ths = prctile_ths_vec(idx2);
 
         % Display progess information:
-        fprintf('\n (%i/%i) h = %i\n (%i/%i) prctile_ths = %f\n', ...
-            idx1, lgth_h, h, idx2, lgth_prctile_ths, prctile_ths)
+        fprintf('\n (%i/%i) nbins = %i\n (%i/%i) prctile_ths = %f\n', ...
+            idx1, lgth_nbins, nbins, idx2, lgth_prctile_ths, prctile_ths)
 
         % Grids:
         [gridx, gridy] = histograms_create_grids(nbins, colorspace);
 
         % Training backprojection:
-        R = backprojection_kde_train(gridx, gridy, colorspace, ...
-                            percen_data, kernelname, h, Xin, Xout, 0);
+        R = backprojection_mod_train(gridx, gridy, colorspace, Xin, Xout, 0);
 
         % Loop over validation images:
         TPacum = 0;
@@ -187,7 +181,7 @@ for idx1 = 1:lgth_h
                 progress = progress + 10;
             end
             % Computed mask:
-            computed_mask = backprojection_kde_run(validation_images{i}, R, ...
+            computed_mask = backprojection_mod_run(validation_images{i}, R, ...
                                 gridx, gridy, colorspace, prctile_ths);
             % Performance evaluation:
             [TP, FP, FN, TN] = PerformanceAccumulationPixel(computed_mask, validation_masks{i});
@@ -204,9 +198,10 @@ for idx1 = 1:lgth_h
         % Recall:
         recall_array(idx1, idx2) = TPacum / (TPacum + FNacum);
     end
+
 end
 
 % Storing arrays with statistics:
-save('bp_kde_tuning_hsv', 'precision_array', 'recall_array', 'h_vec', 'prctile_ths_vec');
+save('bp_mod_tuning_hsv', 'precision_array', 'recall_array', 'nbins_vec', 'prctile_ths_vec');
 
 

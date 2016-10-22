@@ -1,4 +1,4 @@
-function mask = backprojection_kde_run(image, R, gridx, gridy, colorspace, prctile_ths)
+function mask = backprojection_mod_run(image, R, gridx, gridy, colorspace, prctile_ths)
 
 
 % Transform data to specified color space:
@@ -22,7 +22,7 @@ if(strcmp(colorspace, 'lab'))
             % Find position in R for pixel (i,j) of the image:
             idxgridx = round(1 + (image_cs(i,j,2) - gridx(1)) / stepx);
             idxgridy = round(1 + (image_cs(i,j,3) - gridy(1)) / stepy);
-            b(i,j) = R(idxgridx, idxgridy);
+            b(i,j) = min(R(idxgridx, idxgridy), 1);
         end
     end
     
@@ -32,7 +32,7 @@ elseif(strcmp(colorspace, 'hsv'))
             % Find position in R for pixel (i,j) of the image:
             idxgridx = round(1 + (image_cs(i,j,1) - gridx(1)) / stepx);
             idxgridy = round(1 + (image_cs(i,j,2) - gridy(1)) / stepy);
-            b(i,j) = R(idxgridx, idxgridy);
+            b(i,j) = min(R(idxgridx, idxgridy), 1);
         end
     end
     

@@ -11,6 +11,7 @@ nbins_lab_max = 0;
 h_lab_max = 0;
 r_lab_max = 0;
 prctile_ths_lab_max = 0;
+recall_lab = 0;
 for idx1 = 1:length(nbins_vec)
     for idx2 = 1:length(h_vec)
         for idx3 = 1:length(r_vec)
@@ -49,6 +50,7 @@ nbins_hsv_max = 0;
 h_hsv_max = 0;
 r_hsv_max = 0;
 prctile_ths_hsv_max = 0;
+recall_hsv = 0;
 for idx1 = 1:length(nbins_vec)
     for idx2 = 1:length(h_vec)
         for idx3 = 1:length(r_vec)
@@ -78,7 +80,7 @@ fprintf('prctile_ths = %i\n\n', prctile_ths_hsv_max)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 % Selecting colorspace for maximum:
-if(max_precision_lab > max_precision_hsv) % Lab wis
+if(max_precision_lab > max_precision_hsv) % Lab wins
     params.colorspace = 'lab';
     params.nbins = nbins_lab_max;
     params.h = h_lab_max;
@@ -91,6 +93,13 @@ else % hsv wins
     params.h = h_hsv_max;
     params.r = r_hsv_max;
     params.prctile_ths = prctile_ths_hsv_max;
+end
+
+% Write results:
+save('bp_kde_params.mat', 'params')
+
+return
+
 end
 
 

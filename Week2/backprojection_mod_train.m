@@ -1,5 +1,4 @@
-function R = backprojection_kde_train2(gridx, gridy, colorspace, ...
-                                percen_data, kernelname, h, Xin, Xout)
+function R = backprojection_mod_train(gridx, gridy, colorspace, Xin, Xout, showMCR)
 
 
 
@@ -21,7 +20,7 @@ else
 end
 
 % Compute density estimation of model:
-M = kde2d(Xin_cs, h, kernelname, gridx, gridy, percen_data);
+M = hist3(Xin_cs, [{gridx}, {gridy}]);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -41,12 +40,30 @@ else
 end
 
 % Compute histogram of complementary of model:
-C = kde2d(Xout_cs, h, kernelname, gridx, gridy, percen_data);
+C = hist3(Xout_cs, [{gridx}, {gridy}]);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Ratio of model and complementary:
-R = M ./ C;
+R = min(1, M ./ C);
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Plotting results:
+if(showMCR == 1)
+    maxMC = max(max(max(M)), max(max(C)));
+    figure()
+    subplot(2,2,1)
+    imshow(M, [0 maxMC])
+    title('M')
+    subplot(2,2,2)
+    imshow(C, [0 maxMC])
+    title('C')
+    subplot(2,2,3)
+    imshow(R, [0 1])
+    title('R')
+end
+
 
 return
 
