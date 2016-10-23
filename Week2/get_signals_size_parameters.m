@@ -1,4 +1,4 @@
-function get_signals_main_parameters(dirTrainDataSet, dirgt, dirmask)
+function [min_size, max_size, form_factor, filling_ratio] = get_signals_size_parameters(dirTrainDataSet, dirgt, dirmask)
 
 % Create lists with the ground truth annotations files, the mask files, and
 % the original image files:
@@ -18,15 +18,10 @@ signals = signals(filling_ratio ~= 0);
 % See the different types of signals, and count how many times they appear:
 [signals_list, nrepetitions] = count_signals_types(signals);
 
-% Again, create vectors with filling_ratio and form_factor.
-% This time, we also calculate the means within each type of signal:
-[filling_ratio, form_factor, fr_means, ff_means] = get_fr_ff_bytypes(signals, ...
-                                                   signals_list, nrepetitions);
-
 % Calculate minimum and maximum size for each type of signal:
 [min_size, max_size] = get_min_max_size_bytypes(signals, signals_list, nrepetitions);
 
-save('signals_info', 'signals', 'signals_list', 'nrepetitions', 'fr_means', 'ff_means', 'min_size', 'max_size');
+save('signals_size_parameters', 'min_size', 'max_size', 'form_factor', 'filling_ratio');
 
 end
 
