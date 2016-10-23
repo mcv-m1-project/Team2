@@ -1,7 +1,7 @@
 function backprojection_mod_train_final(train_signals, train_image_list, dirimage, train_mask_list, dirmask)
 
 % Load parameters:
-load('bp_mod_params.mat')
+load('bp_mod_select.mat')
 colorspace = params.colorspace;
 prctile_ths = params.prctile_ths;
 nbins = params.nbins;
