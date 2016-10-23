@@ -73,13 +73,10 @@ end
 % Tuning parameters:
 % Number of bins of histograms:
 nbins_vec = [10, 15, 25, 50];
-% nbins_vec = [25, 50];
+% nbins_vec = [25];
 % Threshold for binarizing:
-prctile_ths_vec = [70, 75, 80, 85, 90, 95];
-% prctile_ths_vec = [70, 75];
-
-% Other parameters:
-r = 5;
+prctile_ths_vec = [70, 80, 90, 95];
+% prctile_ths_vec = [70];
 
 lgth_nbins = length(nbins_vec);
 lgth_prctile_ths = length(prctile_ths_vec);
@@ -106,7 +103,7 @@ for idx1 = 1:lgth_nbins
         [gridx, gridy] = histograms_create_grids(nbins, colorspace);
 
         % Training backprojection:
-        M = backprojection_sb_train(gridx, gridy, colorspace, Xin, 0);
+        R = backprojection_mod_train(gridx, gridy, colorspace, Xin, Xout, 0);
 
         % Loop over validation images:
         TPacum = 0;
@@ -122,8 +119,8 @@ for idx1 = 1:lgth_nbins
                 progress = progress + 10;
             end
             % Computed mask:
-            computed_mask = backprojection_sb_run(validation_images{i}, M, ...
-                                gridx, gridy, colorspace, r, prctile_ths);
+            computed_mask = backprojection_mod_run(validation_images{i}, R, ...
+                                gridx, gridy, colorspace, prctile_ths);
             % Performance evaluation:
             [TP, FP, FN, TN] = PerformanceAccumulationPixel(computed_mask, validation_masks{i});
             TPacum = TPacum + TP;
@@ -143,7 +140,7 @@ for idx1 = 1:lgth_nbins
 end
 
 % Storing arrays with statistics:
-save('bp_sb_tuning_lab', 'precision_array', 'recall_array', 'nbins_vec', 'prctile_ths_vec');
+save('bp_mod_tuning_lab', 'precision_array', 'recall_array', 'nbins_vec', 'prctile_ths_vec');
 
 
 
@@ -168,7 +165,7 @@ for idx1 = 1:lgth_nbins
         [gridx, gridy] = histograms_create_grids(nbins, colorspace);
 
         % Training backprojection:
-        M = backprojection_sb_train(gridx, gridy, colorspace, Xin, 0);
+        R = backprojection_mod_train(gridx, gridy, colorspace, Xin, Xout, 0);
 
         % Loop over validation images:
         TPacum = 0;
@@ -184,8 +181,8 @@ for idx1 = 1:lgth_nbins
                 progress = progress + 10;
             end
             % Computed mask:
-            computed_mask = backprojection_sb_run(validation_images{i}, M, ...
-                                gridx, gridy, colorspace, r, prctile_ths);
+            computed_mask = backprojection_mod_run(validation_images{i}, R, ...
+                                gridx, gridy, colorspace, prctile_ths);
             % Performance evaluation:
             [TP, FP, FN, TN] = PerformanceAccumulationPixel(computed_mask, validation_masks{i});
             TPacum = TPacum + TP;
@@ -205,6 +202,6 @@ for idx1 = 1:lgth_nbins
 end
 
 % Storing arrays with statistics:
-save('bp_sb_tuning_hsv', 'precision_array', 'recall_array', 'nbins_vec', 'prctile_ths_vec');
+save('bp_mod_tuning_hsv', 'precision_array', 'recall_array', 'nbins_vec', 'prctile_ths_vec');
 
 

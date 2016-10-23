@@ -1,10 +1,10 @@
-function params = backprojection_sb_select(min_recall)
+function params = backprojection_mod_select(min_recall)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 % Lab colorspace:
 
 % Loading results:
-load('bp_sb_tuning_lab.mat');
+load('bp_mod_tuning_lab.mat');
 
 max_precision_lab = 0;
 nbins_lab_max = 0;
@@ -33,7 +33,7 @@ fprintf('prctile_ths = %i\n\n', prctile_ths_lab_max)
 % hsv colorspace:
 
 % Loading results:
-load('bp_sb_tuning_hsv.mat');
+load('bp_mod_tuning_hsv.mat');
 
 max_precision_hsv = 0;
 nbins_hsv_max = 0;
@@ -64,17 +64,15 @@ if(max_precision_lab > max_precision_hsv) % Lab wins
     params.colorspace = 'lab';
     params.nbins = nbins_lab_max;
     params.prctile_ths = prctile_ths_lab_max;
-    params.r = 5;
     
 else % hsv wins
     params.colorspace = 'hsv';
     params.nbins = nbins_hsv_max;
     params.prctile_ths = prctile_ths_hsv_max;
-    params.r = 5;
 end
 
 % Write results:
-save('bp_sb_params.mat', 'params')
+save('bp_mod_select.mat', 'params')
 
 return
 
