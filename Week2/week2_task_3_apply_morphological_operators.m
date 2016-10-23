@@ -1,12 +1,14 @@
-function outMasksDir = week2_task_3_apply_morphological_operators(dirMask, dirGroundTruthMasks)
+function outMasksDir = week2_task_3_apply_morphological_operators(dirMask, dirGroundTruthMasks, min_size, max_size)
 %week2_task_3_apply_morphological_operators
 %   Use morphological operators to improve results on color segmentation
 %
 %   Parameters
 %       'dirMask' - Path to the input masks folder
+%       'dirGroundTruthMasks' - Path to the truth masks folder
+%       'min_size' - Minimum signal size
+%       'max_size' - Maximum signal size
 %   Return
 %       'outMasks' - Path to the output masks folder
-%       'dirGroundTruthMasks' - Path to the truth masks folder
 
 input_masks = ListFiles(dirMask);
 if(size(input_masks,1) == 0)
@@ -22,7 +24,7 @@ end
 for idx = 1:size(input_masks,1)
    in_mask = imread([dirMask '\' input_masks(idx).name]);
    
-   out_mask = apply_morphological_operators(in_mask);
+   out_mask = apply_morphological_operators(in_mask, min_size, max_size);
    
    imwrite(out_mask,[outMasksDir input_masks(idx).name]);
    
@@ -31,7 +33,7 @@ for idx = 1:size(input_masks,1)
 end
 
 [precision,accuracy,recall,F,TP,FP,FN] = evaluation( dirGroundTruthMasks, outMasksDir);
-% save('ev_square_imerode_imfill', 'precision', 'accuracy', 'recall',...
+% save('evaluation_mo_results', 'precision', 'accuracy', 'recall',...
 % 'F', 'TP', 'FP', 'FN' );
 
 % Summary of signal types:
