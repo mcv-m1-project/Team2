@@ -18,11 +18,7 @@ tic
 hist = load('back-projection-HSV');
 hist_g1 = hist.hist_g1;
 hist_g2 = hist.hist_g2;
-hist_g3 = hist-hist_g3;
-
-max_prob_g1 = max(max(hist_g1));
-max_prob_g2 = max(max(hist_g2));
-max_prob_g3 = max(max(hist_g3));
+hist_g3 = hist.hist_g3;
 
 th_g1=hist.th_g1;
 th_g2=hist.th_g2;
@@ -37,6 +33,7 @@ TN = 0;
 for image=1:length(validationSet)
 	im_orig = imread([dirTrainDataSet '\' validationSet{image} '.jpg']);
 	[mask] = maskCalculationHSV(im_orig, hist_g1,hist_g2,hist_g3, th_g1, th_g2,th_g3);
+    imwrite(mask,[dirTrainDataSet '\result_masks\back-projection\HSV\validation\' validationSet{image} '.png']);
 	imGroundTruth = imread([dirTrainDataSet '\mask\mask.' validationSet{image} '.png']);
 	[pixelTP, pixelFP, pixelFN, pixelTN] = PerformanceAccumulationPixel(mask, imGroundTruth);
 	TP = TP + pixelTP;

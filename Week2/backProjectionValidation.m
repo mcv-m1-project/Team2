@@ -32,7 +32,8 @@ TN = 0;
 for image=1:length(validationSet)
 	im_orig = imread([dirTrainDataSet '\' validationSet{image} '.jpg']);
 	[mask] = maskCalculation(im_orig, hist_g1,hist_g2,hist_g3, th_g1, th_g2,th_g3);
-	imGroundTruth = imread([dirTrainDataSet '\mask\mask.' validationSet{image} '.png']);
+    imwrite(mask,[dirTrainDataSet '\result_masks\back-projection\validation\' validationSet{image} '.png']);
+    imGroundTruth = imread([dirTrainDataSet '\mask\mask.' validationSet{image} '.png']);
 	[pixelTP, pixelFP, pixelFN, pixelTN] = PerformanceAccumulationPixel(mask, imGroundTruth);
 	TP = TP + pixelTP;
 	FP = FP + pixelFP;

@@ -55,5 +55,22 @@ for bin=1:length(numBins)
         thMat(bin,th,3) = th_g3(th);
     end
 end
+
+plot(precisionMat(1,:),recallMat(1,:))
+xlabel('Precision')
+ylabel('Recall')
+legend('64 bins')
+
+Fmax = max(max(FMat));
+[bin_max, th_max] = find(FMat == Fmax);
+bin = numBins(bin_max);
+
+th_g1 = thMat(bin_max, th_max,1);
+th_g2 = thMat(bin_max, th_max,2);
+th_g3 = thMat(bin_max, th_max,3);
+
+[hist_g1,hist_g2,hist_g3] = jointHistogramsByGroupHSV(trainSet, signals, bin);
+save('back-projection-HSV', 'hist_g1', 'hist_g2', 'hist_g3', 'th_g1', 'th_g2', 'th_g3');
+
 end
 
