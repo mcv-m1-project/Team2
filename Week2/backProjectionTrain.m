@@ -1,4 +1,4 @@
-function [ precisionMat, recallMat, FMat, thMat ] = backProjectionTrain( dirTrainDataSet, trainSet, signals)
+function [ precisionMat, recallMat, FMat, thMat, bin, th_g1, th_g2, th_g3 ] = backProjectionTrain( dirTrainDataSet, trainSet, signals)
 %BACKPROJECTIONTRAIN 
 %Funtion to train the color segmentation system based on histogram back-projection
 %   Parameters
@@ -11,6 +11,10 @@ function [ precisionMat, recallMat, FMat, thMat ] = backProjectionTrain( dirTrai
 %       the number of bins (rows) and the used threshold (columns)
 %       'recallMat' - matrix containg the obtained recall depending on
 %       the number of bins (rows) and the used threshold (columns)
+%       'bin' - number of bins that maximises the system F-measure
+%       'th_g1' - threshold of G1 traffic signals that maximises the system F-measure
+%       'th_g2' - threshold of G2 traffic signals that maximises the system F-measure
+%       'th_g3' - threshold of G3 traffic signals that maximises the system F-measure
 
 precisionMat = zeros(6,11);
 recallMat = zeros(6,11);
@@ -55,5 +59,22 @@ for bin=1:length(numBins)
         thMat(bin,th,3) = th_g3(th);
     end
 end
+
+plot(precisionMat(1,:),recallMat(1,:),'b.-',precisionMat(2,:),recallMat(2,:),'g.-',precisionMat(3,:),recallMat(3,:),'r.-',precisionMat(4,:),recallMat(4,:),'m.-',precisionMat(5,:),recallMat(5,:),'y.-',precisionMat(6,:),recallMat(6,:),'b.-')
+xlabel('Precision')
+ylabel('Recall')
+legend('8 bins','16 bins','32 bins','64 bins','128 bins','256 bins')
+
+Fmax = max(max(FMat));
+[bin_max, th_max] = find(FMat == Fmax);
+bin = numBins(bin_max);
+
+th_g1 = thMat(bin_max, th_max,1);
+th_g2 = thMat(bin_max, th_max,2);
+th_g3 = thMat(bin_max, th_max,3);
+
+[hist_g1,hist_g2,hist_g3] = jointHistogramsByGroup(trainSet, signals, bin);
+save('back-projection-Lab', 'hist_g1', 'hist_g2', 'hist_g3', 'th_g1', 'th_g2', 'th_g3');
+
 end
 
