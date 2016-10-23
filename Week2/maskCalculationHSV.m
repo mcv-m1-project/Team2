@@ -24,7 +24,7 @@ function [mask] = maskCalculationHSV(im_orig, hist_g1, hist_g2 ,hist_g3, th_g1, 
        for j = 1:width
            %Find the histogram bin where the pixel color is represented
            h_component = ceil(im(i,j,1)/(360/numBins)+1);
-           s_component = ceil(im(i,j,2)/(100/numBins)+1);
+           s_component = ceil(im(i,j,2)/(1/numBins)+1);
            %Decide if that pixel is part of a traffic signal or not
            if (hist_g1(h_component,s_component) >= th_g1 || hist_g2(h_component,s_component) >= th_g2 || hist_g3(h_component,s_component) >= th_g3)
                mask(i,j) = 1;
