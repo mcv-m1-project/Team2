@@ -12,10 +12,12 @@ dirimage = [dirbase, '\..\..\train'];
 dirgt = [dirimage, '\gt'];
 % Path to Masks:
 dirmask = [dirimage, '\mask'];
+% Path to test images:
+dirtest = [dirbase, '\..\..\test'];
 
 % We add the path where some scripts are.
 addpath([dirbase, '\..\evaluation\'])
-addpath([dirbase, '\auxilar\'])
+addpath([dirbase, '\auxiliar\'])
 
 % Load signals vector.
 load('signals_workspace');
@@ -84,6 +86,7 @@ for i = 1:length(train_signalsABC)
     if(flag == 0)
         countABC = countABC + 1;
         train_image_list_ABC{countABC} = [train_signalsABC(i).filename, '.jpg'];
+        train_mask_list_ABC{countABC} = ['mask.', train_signalsABC(i).filename, '.png'];
     end
 end
 
@@ -103,6 +106,7 @@ for i = 1:length(train_signalsDF)
     if(flag == 0)
         countDF = countDF + 1;
         train_image_list_DF{countDF} = [train_signalsDF(i).filename, '.jpg'];
+        train_mask_list_DF{countDF} = ['mask.', train_signalsDF(i).filename, '.png'];
     end
 end
 
@@ -122,8 +126,29 @@ for i = 1:length(train_signalsE)
     if(flag == 0)
         countE = countE + 1;
         train_image_list_E{countE} = [train_signalsE(i).filename, '.jpg'];
+        train_mask_list_E{countE} = ['mask.', train_signalsE(i).filename, '.png'];
     end
 end
+
+% Test images list:
+dirlist = dir(dirtest);
+if(isempty(dirlist)) % Display an error if the path is wrong.
+    fprintf('dirtest = %s\n', dirtest)
+    error('Empty list. Probably previous directory is wrong.')
+end
+nfiles = 0; % Initialize the number of files.
+test_image_list = cell(0); % Initialize cell array with image files names.
+% I go over dirlist, selecting those names which correspond to an image:
+for i = 1:size(dirlist,1)
+    name = dirlist(i).name;
+    % I check the name ends with '.txt':
+    if(~isempty(regexp(name, '.*\.jpg$')))
+        nfiles = nfiles + 1;
+        % Name of the image file:
+        test_image_list{nfiles} = name;
+    end
+end
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TRAINING
@@ -159,30 +184,79 @@ load('bp_kde_final.mat')
 save('bp_kde_final_E.mat', 'R', 'gridx', 'gridy', 'colorspace', 'prctile_ths')
 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % COMPUTING AND WRITING MASKS
-for i = 1:length(testSet)
-    imagefile = [dirtest, test_image_list{i}];
-    imread(imagefile);
-    
-    %%%% Swain-Ballard %%%
-    % ABC
-    load('bp_sb_final_ABC.mat')
-    maskABC = backprojection_sb_run(image, M, gridx, gridy, colorspace, r, prctile_ths);
-    % DF
-    load('bp_sb_final_DF.mat')
-    maskDF = backprojection_sb_run(image, M, gridx, gridy, colorspace, r, prctile_ths);
-    % E
-    load('bp_sb_final_E.mat')
-    maskE = backprojection_sb_run(image, M, gridx, gridy, colorspace, r, prctile_ths);
-    % Joining them:
-    mask_sb = maskABC | maskDF | maskE;
-    % Writing mask:
-    imwrite(mask_sb, [dirmaskwrite_sb, ])
-    
-    
-    
-end
+% 
+% % Create directories:
+% dirmaskwrite_sb = [dirtest, '\result_masks\bp_sb'];
+% dirmaskwrite_mod = [dirtest, '\result_masks\bp_sb'];
+% dirmaskwrite_kde = [dirtest, '\result_masks\bp_sb'];
+% mkdir(dirmaskwrite_sb)
+% mkdir(dirmaskwrite_mod)
+% mkdir(dirmaskwrite_kde)
+% 
+% % Masks:
+% fprintf('\nComputing and writing test masks...\n')
+% progress = 10;
+% fprintf('Completado 0%%\n')
+% len_testSet = length(testSet);
+% for i = 1:len_testSet
+%     if(i > progress / 100 * len_testSet)
+%         fprintf('Completado %i%%\n', progress)
+%         progress = progress + 10;
+%     end
+%             
+%     imagefile = [dirtest, test_image_list{i}];
+%     imread(imagefile);
+%     
+%     %%%% Swain-Ballard %%%
+%     % ABC
+%     load('bp_sb_final_ABC.mat')
+%     maskABC = backprojection_sb_run(image, M, gridx, gridy, colorspace, r, prctile_ths);
+%     % DF
+%     load('bp_sb_final_DF.mat')
+%     maskDF = backprojection_sb_run(image, M, gridx, gridy, colorspace, r, prctile_ths);
+%     % E
+%     load('bp_sb_final_E.mat')
+%     maskE = backprojection_sb_run(image, M, gridx, gridy, colorspace, r, prctile_ths);
+%     % Joining them:
+%     mask_sb = maskABC | maskDF | maskE;
+%     % Writing mask:
+%     imwrite(mask_sb, [dirmaskwrite_sb, '\mask.', imagefile, '.png'])
+%     
+%     %%%% Modified %%%
+%     % ABC
+%     load('bp_mod_final_ABC.mat')
+%     maskABC = backprojection_mod_run(image, M, gridx, gridy, colorspace, r, prctile_ths);
+%     % DF
+%     load('bp_mod_final_DF.mat')
+%     maskDF = backprojection_mod_run(image, M, gridx, gridy, colorspace, r, prctile_ths);
+%     % E
+%     load('bp_mod_final_E.mat')
+%     maskE = backprojection_mod_run(image, M, gridx, gridy, colorspace, r, prctile_ths);
+%     % Joining them:
+%     mask_mod = maskABC | maskDF | maskE;
+%     % Writing mask:
+%     imwrite(mask_mod, [dirmaskwrite_mod, '\mask.', imagefile, '.png'])
+%     
+%     %%%% KDE %%%
+%     % ABC
+%     load('bp_kde_final_ABC.mat')
+%     maskABC = backprojection_kde_run(image, M, gridx, gridy, colorspace, r, prctile_ths);
+%     % DF
+%     load('bp_kde_final_DF.mat')
+%     maskDF = backprojection_kde_run(image, M, gridx, gridy, colorspace, r, prctile_ths);
+%     % E
+%     load('bp_kde_final_E.mat')
+%     maskE = backprojection_kde_run(image, M, gridx, gridy, colorspace, r, prctile_ths);
+%     % Joining them:
+%     mask_kde = maskABC | maskDF | maskE;
+%     % Writing mask:
+%     imwrite(mask_kde, [dirmaskwrite_kde, '\mask.', imagefile, '.png'])
+%     
+% end
+% fprintf('Completado 100%%\n\n')
 
 
 

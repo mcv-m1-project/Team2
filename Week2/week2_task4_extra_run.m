@@ -17,7 +17,7 @@ dirtest = [dirbase, '\..\..\test'];
 
 % We add the path where some scripts are.
 addpath([dirbase, '\..\evaluation\'])
-addpath([dirbase, '\auxilar\'])
+addpath([dirbase, '\auxiliar\'])
 
 % Load signals vector.
 load('signals_workspace');
@@ -86,6 +86,7 @@ for i = 1:length(train_signalsABC)
     if(flag == 0)
         countABC = countABC + 1;
         train_image_list_ABC{countABC} = [train_signalsABC(i).filename, '.jpg'];
+        train_mask_list_ABC{countABC} = ['mask.', train_signalsABC(i).filename, '.png'];
     end
 end
 
@@ -105,6 +106,7 @@ for i = 1:length(train_signalsDF)
     if(flag == 0)
         countDF = countDF + 1;
         train_image_list_DF{countDF} = [train_signalsDF(i).filename, '.jpg'];
+        train_mask_list_DF{countDF} = ['mask.', train_signalsDF(i).filename, '.png'];
     end
 end
 
@@ -124,6 +126,7 @@ for i = 1:length(train_signalsE)
     if(flag == 0)
         countE = countE + 1;
         train_image_list_E{countE} = [train_signalsE(i).filename, '.jpg'];
+        train_mask_list_E{countE} = ['mask.', train_signalsE(i).filename, '.png'];
     end
 end
 
@@ -150,36 +153,36 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TRAINING
 
-% Minimum recall:
-min_recall = 0.5;
-
-% Selecting parameters and training all methods with ABC images:
-bp_select_minrecall(min_recall, train_signalsABC, train_image_list_ABC, dirimage, train_mask_list_ABC, dirmask)
-load('bp_sb_final.mat')
-save('bp_sb_final_ABC.mat', 'M', 'gridx', 'gridy', 'colorspace', 'prctile_ths', 'r')
-load('bp_mod_final.mat')
-save('bp_mod_final_ABC.mat', 'R', 'gridx', 'gridy', 'colorspace', 'prctile_ths')
-load('bp_kde_final.mat')
-save('bp_kde_final_ABC.mat', 'R', 'gridx', 'gridy', 'colorspace', 'prctile_ths')
-
-% Selecting parameters and training all methods with DF images:
-bp_select_minrecall(min_recall, train_signalsDF, train_image_list_DF, dirimage, train_mask_list_DF, dirmask)
-load('bp_sb_final.mat')
-save('bp_sb_final_DF.mat', 'M', 'gridx', 'gridy', 'colorspace', 'prctile_ths', 'r')
-load('bp_mod_final.mat')
-save('bp_mod_final_DF.mat', 'R', 'gridx', 'gridy', 'colorspace', 'prctile_ths')
-load('bp_kde_final.mat')
-save('bp_kde_final_DF.mat', 'R', 'gridx', 'gridy', 'colorspace', 'prctile_ths')
-
-% Selecting parameters and training all methods with E images:
-bp_select_minrecall(min_recall, train_signalsE, train_image_list_E, dirimage, train_mask_list_E, dirmask)
-load('bp_sb_final.mat')
-save('bp_sb_final_E.mat', 'M', 'gridx', 'gridy', 'colorspace', 'prctile_ths', 'r')
-load('bp_mod_final.mat')
-save('bp_mod_final_E.mat', 'R', 'gridx', 'gridy', 'colorspace', 'prctile_ths')
-load('bp_kde_final.mat')
-save('bp_kde_final_E.mat', 'R', 'gridx', 'gridy', 'colorspace', 'prctile_ths')
-
+% % Minimum recall:
+% min_recall = 0.5;
+% 
+% % Selecting parameters and training all methods with ABC images:
+% bp_select_minrecall(min_recall, train_signalsABC, train_image_list_ABC, dirimage, train_mask_list_ABC, dirmask)
+% load('bp_sb_final.mat')
+% save('bp_sb_final_ABC.mat', 'M', 'gridx', 'gridy', 'colorspace', 'prctile_ths', 'r')
+% load('bp_mod_final.mat')
+% save('bp_mod_final_ABC.mat', 'R', 'gridx', 'gridy', 'colorspace', 'prctile_ths')
+% load('bp_kde_final.mat')
+% save('bp_kde_final_ABC.mat', 'R', 'gridx', 'gridy', 'colorspace', 'prctile_ths')
+% 
+% % Selecting parameters and training all methods with DF images:
+% bp_select_minrecall(min_recall, train_signalsDF, train_image_list_DF, dirimage, train_mask_list_DF, dirmask)
+% load('bp_sb_final.mat')
+% save('bp_sb_final_DF.mat', 'M', 'gridx', 'gridy', 'colorspace', 'prctile_ths', 'r')
+% load('bp_mod_final.mat')
+% save('bp_mod_final_DF.mat', 'R', 'gridx', 'gridy', 'colorspace', 'prctile_ths')
+% load('bp_kde_final.mat')
+% save('bp_kde_final_DF.mat', 'R', 'gridx', 'gridy', 'colorspace', 'prctile_ths')
+% 
+% % Selecting parameters and training all methods with E images:
+% bp_select_minrecall(min_recall, train_signalsE, train_image_list_E, dirimage, train_mask_list_E, dirmask)
+% load('bp_sb_final.mat')
+% save('bp_sb_final_E.mat', 'M', 'gridx', 'gridy', 'colorspace', 'prctile_ths', 'r')
+% load('bp_mod_final.mat')
+% save('bp_mod_final_E.mat', 'R', 'gridx', 'gridy', 'colorspace', 'prctile_ths')
+% load('bp_kde_final.mat')
+% save('bp_kde_final_E.mat', 'R', 'gridx', 'gridy', 'colorspace', 'prctile_ths')
+% 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -187,8 +190,8 @@ save('bp_kde_final_E.mat', 'R', 'gridx', 'gridy', 'colorspace', 'prctile_ths')
 
 % Create directories:
 dirmaskwrite_sb = [dirtest, '\result_masks\bp_sb'];
-dirmaskwrite_mod = [dirtest, '\result_masks\bp_sb'];
-dirmaskwrite_kde = [dirtest, '\result_masks\bp_sb'];
+dirmaskwrite_mod = [dirtest, '\result_masks\bp_mod'];
+dirmaskwrite_kde = [dirtest, '\result_masks\bp_kde'];
 mkdir(dirmaskwrite_sb)
 mkdir(dirmaskwrite_mod)
 mkdir(dirmaskwrite_kde)
@@ -197,15 +200,17 @@ mkdir(dirmaskwrite_kde)
 fprintf('\nComputing and writing test masks...\n')
 progress = 10;
 fprintf('Completado 0%%\n')
-len_testSet = length(testSet);
+len_testSet = length(test_image_list);
 for i = 1:len_testSet
     if(i > progress / 100 * len_testSet)
         fprintf('Completado %i%%\n', progress)
         progress = progress + 10;
     end
-            
-    imagefile = [dirtest, test_image_list{i}];
-    imread(imagefile);
+    
+    imagename = test_image_list{i};
+    simplename = imagename(1:(regexp(imagename, '\.jpg$')-1));
+    imagefile = [dirtest, '\', imagename];
+    image = imread(imagefile);
     
     %%%% Swain-Ballard %%%
     % ABC
@@ -220,37 +225,37 @@ for i = 1:len_testSet
     % Joining them:
     mask_sb = maskABC | maskDF | maskE;
     % Writing mask:
-    imwrite(mask_sb, [dirmaskwrite_sb, '\mask.', imagefile, '.png'])
+    imwrite(mask_sb, [dirmaskwrite_sb, '\mask.', simplename, '.png'])
     
     %%%% Modified %%%
     % ABC
     load('bp_mod_final_ABC.mat')
-    maskABC = backprojection_mod_run(image, M, gridx, gridy, colorspace, r, prctile_ths);
+    maskABC = backprojection_mod_run(image, R, gridx, gridy, colorspace, prctile_ths);
     % DF
     load('bp_mod_final_DF.mat')
-    maskDF = backprojection_mod_run(image, M, gridx, gridy, colorspace, r, prctile_ths);
+    maskDF = backprojection_mod_run(image, R, gridx, gridy, colorspace, prctile_ths);
     % E
     load('bp_mod_final_E.mat')
-    maskE = backprojection_mod_run(image, M, gridx, gridy, colorspace, r, prctile_ths);
+    maskE = backprojection_mod_run(image, R, gridx, gridy, colorspace, prctile_ths);
     % Joining them:
     mask_mod = maskABC | maskDF | maskE;
     % Writing mask:
-    imwrite(mask_mod, [dirmaskwrite_mod, '\mask.', imagefile, '.png'])
+    imwrite(mask_mod, [dirmaskwrite_mod, '\mask.', simplename, '.png'])
     
     %%%% KDE %%%
     % ABC
     load('bp_kde_final_ABC.mat')
-    maskABC = backprojection_kde_run(image, M, gridx, gridy, colorspace, r, prctile_ths);
+    maskABC = backprojection_kde_run(image, R, gridx, gridy, colorspace, prctile_ths);
     % DF
     load('bp_kde_final_DF.mat')
-    maskDF = backprojection_kde_run(image, M, gridx, gridy, colorspace, r, prctile_ths);
+    maskDF = backprojection_kde_run(image, R, gridx, gridy, colorspace, prctile_ths);
     % E
     load('bp_kde_final_E.mat')
-    maskE = backprojection_kde_run(image, M, gridx, gridy, colorspace, r, prctile_ths);
+    maskE = backprojection_kde_run(image, R, gridx, gridy, colorspace, prctile_ths);
     % Joining them:
     mask_kde = maskABC | maskDF | maskE;
     % Writing mask:
-    imwrite(mask_kde, [dirmaskwrite_kde, '\mask.', imagefile, '.png'])
+    imwrite(mask_kde, [dirmaskwrite_kde, '\mask.', simplename, '.png'])
     
 end
 fprintf('Completado 100%%\n\n')
