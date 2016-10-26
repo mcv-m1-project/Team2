@@ -21,7 +21,6 @@ end
 
 % Compute histogram of model:
 M = hist3(Xin_cs, [{gridx}, {gridy}]);
-M = M / size(Xin_cs, 1);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

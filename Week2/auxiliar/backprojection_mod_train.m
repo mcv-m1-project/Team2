@@ -1,4 +1,4 @@
-function R = backprojection_mod_train(gridx, gridy, colorspace, Xin, Xout, showMC, showR)
+function R = backprojection_mod_train(gridx, gridy, colorspace, Xin, Xout, showMCR)
 
 
 
@@ -19,9 +19,8 @@ else
     error('Color space not recognized.')
 end
 
-% Compute histogram of model:
+% Compute density estimation of model:
 M = hist3(Xin_cs, [{gridx}, {gridy}]);
-M = M / size(Xin_cs, 1);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -40,34 +39,31 @@ else
     error('Color space not recognized.')
 end
 
-% Compute histogram of model:
+% Compute histogram of complementary of model:
 C = hist3(Xout_cs, [{gridx}, {gridy}]);
-C = C / size(Xout_cs, 1);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Ratio of histograms:
-R = min(1, M./C);
+% Ratio of model and complementary:
+R = min(1, M ./ C);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Plotting results:
-if(showMC == 1)
-    maxMC = max(max(M(:)), max(C(:)));
+if(showMCR == 1)
+    maxMC = max(max(max(M)), max(max(C)));
     figure()
-    subplot(1,2,1)
+    subplot(2,2,1)
     imshow(M, [0 maxMC])
-    title('Model histogram')
-    subplot(1,2,2)
+    title('M')
+    subplot(2,2,2)
     imshow(C, [0 maxMC])
-    title('Complementary histogram')
-end
-% Plotting results:
-if(showR == 1)
-    figure()
+    title('C')
+    subplot(2,2,3)
     imshow(R, [0 1])
-    title('Ratio of histograms')
+    title('R')
 end
+
 
 return
 
