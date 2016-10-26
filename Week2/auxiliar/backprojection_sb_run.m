@@ -1,4 +1,5 @@
-function mask = backprojection_sb_run(image, M, gridx, gridy, colorspace, r, prctile_ths)
+function mask = backprojection_sb_run(image, M, gridx, gridy, colorspace, ...
+                                        r, threshold, showIR, showmask)
 
 
 % Transform data to specified color space:
@@ -32,9 +33,10 @@ end
 
 % Compute histogram of input image:
 I = hist3(Xfinal, [{gridx}, {gridy}]);
+I = I / size(Xfinal, 1);
 
 % Ratio of histograms:
-R = M ./ I;
+R = min(1, M ./ I);
 
 % Taking the minimum with the image:
 stepx = gridx(2) - gridx(1);
@@ -43,27 +45,21 @@ nrow = size(image_cs, 1);
 ncol = size(image_cs, 2);
 bprime = zeros(nrow, ncol);
 if(strcmp(colorspace, 'lab'))
-    for i = 1:nrow
-        for j = 1:ncol
-            % Find position in R for pixel (i,j) of the image:
-            idxgridx = round(1 + (image_cs(i,j,2) - gridx(1)) / stepx);
-            idxgridy = round(1 + (image_cs(i,j,3) - gridy(1)) / stepy);
-            bprime(i,j) = min(1, R(idxgridx, idxgridy));
-        end
-    end
-    
+    xvar = 2;
+    yvar = 3;
 elseif(strcmp(colorspace, 'hsv'))
-    for i = 1:nrow
-        for j = 1:ncol
-            % Find position in R for pixel (i,j) of the image:
-            idxgridx = round(1 + (image_cs(i,j,1) - gridx(1)) / stepx);
-            idxgridy = round(1 + (image_cs(i,j,2) - gridy(1)) / stepy);
-            bprime(i,j) = min(1, R(idxgridx, idxgridy));
-        end
-    end
-    
+    xvar = 1;
+    yvar = 2;
 else
     error('Color space not recognized.')
+end 
+for i = 1:nrow
+    for j = 1:ncol
+        % Find position in R for pixel (i,j) of the image:
+        idxgridx = round(1 + (image_cs(i,j,xvar) - gridx(1)) / stepx);
+        idxgridy = round(1 + (image_cs(i,j,yvar) - gridy(1)) / stepy);
+        bprime(i,j) = R(idxgridx, idxgridy);
+    end
 end
 
 % We definde the disk of radius r:
@@ -80,9 +76,30 @@ end
 b = conv2(bprime, D, 'same');
 
 % Thresholding:
-aux = b(:);
-threshold = prctile(aux, prctile_ths);
-mask = b > threshold;
+mask = b > threshold * max(b(:));
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Plotting results:
+if(showIR == 1)
+    maxI = max(I(:));
+    figure()
+    subplot(1,2,1)
+    imshow(I, [0 maxI])
+    title('Image histogram')
+    subplot(1,2,2)
+    imshow(min(1,R), [0 1])
+    title('Ratio histogram')
+end
+if(showmask == 1)
+    figure()
+    subplot(1,2,1)
+    imshow(image)
+    title('Image')
+    subplot(1,2,2)
+    imshow(mask, [0 1])
+    title('Mask')
+end
 
 return
 

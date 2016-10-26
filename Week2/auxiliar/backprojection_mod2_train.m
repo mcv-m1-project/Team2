@@ -1,4 +1,4 @@
-function R = backprojection_mod_train(gridx, gridy, colorspace, Xin, Xout, showMC, showR)
+function [M, R1] = backprojection_mod2_train(gridx, gridy, colorspace, Xin, Xout, showMC, showR)
 
 
 
@@ -47,7 +47,7 @@ C = C / size(Xout_cs, 1);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Ratio of histograms:
-R = min(1, M./C);
+R1 = min(1, M./C);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -65,7 +65,7 @@ end
 % Plotting results:
 if(showR == 1)
     figure()
-    imshow(R, [0 1])
+    imshow(R1, [0 1])
     title('Ratio of histograms')
 end
 

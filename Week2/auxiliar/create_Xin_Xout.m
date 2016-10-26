@@ -1,4 +1,4 @@
-function [Xin, Xout] = create_Xin_Xout(signals, image_list, dirdataset, mask_list, dirmask)
+function [Xin, Xout] = create_Xin_Xout(signals, fileslist, dirdataset, dirmask)
 
 % Count pixels in signals:
 Xin = [];
@@ -15,7 +15,7 @@ for count = 1:length(signals)
 end
 
 % Count pixels out of signals (random sample):
-nimages = length(image_list);
+nimages = length(fileslist);
 npixels = size(Xin, 1);
 npixelsperimage = round(npixels / nimages); % Number of pixels to sample from each image.
 nppi_vec = zeros(nimages); % Vector with the number of pixels to sample in each image (the last one may differ).
@@ -24,8 +24,8 @@ nppi_vec(nimages) = npixels - npixelsperimage * (nimages - 1);
 Xout = zeros(npixels, 3); % We will sample outside as many pixels as inside.
 row = 0;
 for file = 1:nimages
-    image = imread([dirdataset, '\', image_list{file}]);
-    mask = imread([dirmask, '\', mask_list{file}]);
+    image = imread([dirdataset, '\', fileslist{file}, '.jpg']);
+    mask = imread([dirmask, '\mask.', fileslist{file}, '.png']);
     sizex = size(image, 1);
     sizey = size(image, 2);
     count = 0;

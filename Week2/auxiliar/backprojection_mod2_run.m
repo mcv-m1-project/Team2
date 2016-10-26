@@ -1,15 +1,5 @@
-function mask = backprojection_mod_run(image, R, gridx, gridy, colorspace, ...
-                                        r, threshold, showmask)
-
-
-% Transform data to specified color space:
-if(strcmp(colorspace, 'lab'))
-    image_cs = rgb2lab(double(image) / 255);
-elseif(strcmp(colorspace, 'hsv'))
-    image_cs = rgb2hsv(double(image) / 255);
-else
-    error('Color space not recognized.')
-end
+function mask = backprojection_mod2_run(image_cs, R, gridx, gridy, colorspace, ...
+                                        r, threshold)
 
 % Taking the minimum with the image:
 stepx = gridx(2) - gridx(1);
@@ -50,19 +40,6 @@ b = conv2(bprime, D, 'same');
 
 % Thresholding:
 mask = b > threshold * max(b(:));
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Plotting results:
-if(showmask == 1)
-    figure()
-    subplot(1,2,1)
-    imshow(image)
-    title('Image')
-    subplot(1,2,2)
-    imshow(mask, [0 1])
-    title('Mask')
-end
 
 return
 
