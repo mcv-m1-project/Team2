@@ -17,7 +17,7 @@ dirmask = [dirimage, '\mask'];
 addpath([dirbase, '\segmentation_methods\'])
 addpath('..\Week1\')
 addpath('..\Week2\')
-addpath('\auxiliar\')
+addpath('auxiliar\')
 addpath('..\evaluation\')
 
 % Load signals vector.

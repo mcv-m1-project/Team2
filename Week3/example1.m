@@ -52,6 +52,12 @@ end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%% Measure efficiency:
+
+[precision, accuracy, recall, F1, TP, FP, FN, tpf] = ...
+    measure_method_efficiency(validationSet, dirimage, dirmask, runfun, params)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%% RUN AS MANY TIMES AS YOU WANT %%%%%%%%%
 % Compute on random image from validation set:
 run_random(validationSet, dirimage, runfun, params)
