@@ -25,27 +25,10 @@ load('signals_workspace');
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%  validation
-
-
-% For validating, we will take only a fraction of the validation set:
-percen_sets = 30;
-% Validation set:
-nvalidation = length(validationSet);
-tags = randsample(nvalidation, floor(nvalidation * percen_sets / 100));
-validation_red = cell(0);
-for i = 1:length(tags)
-    validation_red{i} = validationSet{tags(i)};
-end
-nvalidation = length(validation_red);
-
-% Loading parameters:
-
 %%%%%%%%%%%%%%%
 % Method choice:
-% method = 'mod2_3groups';
-method = 'RBT';
+method = 'mod2_3groups';
+% method = 'RBT';
 
 % Loading parameters and defining run function:
 if(strcmp(method,'mod2_3groups'))
@@ -65,9 +48,8 @@ else
 end
 
 
-% Computing validation:
-[precision, accuracy, recall, F1, TP, FP, FN, tpf] = ...
-    measure_method_efficiency(validation_red, dirimage, dirmask, runfun, params)
+% Compute on random image from validation set:
+run_random(validationSet, dirimage, runfun, params)
 
 
 
