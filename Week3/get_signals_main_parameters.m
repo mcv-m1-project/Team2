@@ -1,5 +1,8 @@
 function [signals, signals_list, nrepetitions, min_size, max_size, form_factor, filling_ratio, fr_means, ff_means] = get_signals_main_parameters(dirTrainDataSet, dirgt, dirmask)
 
+addpath('..\Week1\')
+addpath('..\Week2\')
+addpath('..\evaluation\')
 % Create lists with the ground truth annotations files, the mask files, and
 % the original image files:
 [gt_list, mask_list, image_list] = create_files_list(dirTrainDataSet);
