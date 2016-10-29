@@ -24,8 +24,17 @@ FN = 0;
 TN = 0;
 
 for i=3:length(images)
-    imGroundTruth = imread([dirGroundTruth '\' images(i).name]);
-    imResult = imread([dirResult '\' images(i).name]);
+    % Checking for the ground truth mask. Since the result mask can have
+    % 'mask.' at the beggining or not, and the ground truth does, we have
+    % to handle both situtations:
+    if(exist([dirGroundTruth, '\mask.', images(i).name], 'file') == 2)
+        imGroundTruth = imread([dirGroundTruth, '\mask.', images(i).name]);
+    elseif(exist([dirGroundTruth, '\', images(i).name], 'file') == 2)
+        imGroundTruth = imread([dirGroundTruth, '\', images(i).name]);
+    else
+        error(['Ground Truth of file ', dirGroundTruth, '\', images(i).name, ' not found'])
+    end
+    imResult = imread([dirResult, '\', images(i).name]);
     [pixelTP, pixelFP, pixelFN, pixelTN] = PerformanceAccumulationPixel(imResult, imGroundTruth);
     TP = TP + pixelTP;
     FP = FP + pixelFP;
