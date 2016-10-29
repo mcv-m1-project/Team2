@@ -1,4 +1,4 @@
-function [precision, sensitivity, accuracy, TP, FN, FP] = region_based_evaluation(dirGroundTruth, dirBBoxResults)
+function [precision, recall, accuracy, F1, TP, FN, FP] = region_based_evaluation(dirGroundTruth, dirBBoxResults)
 %evaluation
 %   Function to evaluate the result obtained with the Traffic Signal
 %   detection system
@@ -18,23 +18,25 @@ function [precision, sensitivity, accuracy, TP, FN, FP] = region_based_evaluatio
 %       'FP' - False Positive objects
 
 
-bbox_annotation = dir(dirBBoxResults);
+files = listFiles(dirGroundTruth);
+nFiles = length(files);
 TP = 0;
 FP = 0;
 FN = 0;
 
-for i=3:size(bbox_annotation)
-    
-    [detections Signs_detected] = LoadAnnotations([dirBBoxResults '\' bbox_annotation(i).name]);
-    [annotations Signs] = LoadAnnotations([dirGroundTruth '\' bbox_annotation(i).name]);
+for i=1:nFiles
+    fileId = files(i).name(4:12);
+    detections = load([dirBBoxResults '\' fileId '.mat']);
+    [annotations Signs] = LoadAnnotations([dirGroundTruth '\gt.' fileId '.txt']);
 
     
-    [regionTP, regionFN, regionFP] = PerformanceAccumulationWindow(detections, annotations);
+    [regionTP, regionFN, regionFP] = PerformanceAccumulationWindow(detections.windowCandidadtes, annotations);
     TP = TP + regionTP;
     FN = FN + regionFN;
     FP = FP + regionFP;
 end
 
-[precision, sensitivity, accuracy] = PerformanceEvaluationWindow(TP, FN, FP);
+[precision, recall, accuracy] = PerformanceEvaluationWindow(TP, FN, FP);
+F1 = 2*precision*recall/(precision+recall);
 
 end
