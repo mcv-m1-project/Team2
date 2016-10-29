@@ -1,8 +1,13 @@
-function [CC_list]  = week3_task1(dirmask)
+function [CC_list]  = week3_task1(dirmask, outdir)
 %function to calculate connected components
 %input: mask dir
 %output: list with the connected components for each image
 load('signals_main_parameters');
+
+% Check for existence of outdir. If not, create it:
+if(exist(outdir, 'dir') ~= 7)
+    mkdir(outdir)
+end
 
 %get the max and min filling ratio
 min_fr = min(filling_ratio);
@@ -15,9 +20,10 @@ max_ff = max(form_factor);
 minimum_size = min(min_size); %get the minimun of the 6 types of signals
 maximum_size = max(max_size); %get the minimun of the 6 types of signals
 
-mask_file_list = dir(dirmask);
-mask_file_list = mask_file_list([3, end]);% the two first objects are not mask names
+mask_file_list = listFiles(dirmask);
 n_mask = length(mask_file_list);    % Number of files found
+n_mask
+CC_list = cell(0);
 
 for i=1:n_mask
     mask_file = [dirmask, '\', mask_file_list(i).name];
@@ -55,26 +61,51 @@ for i=1:n_mask
     end
     
     
-    newCCproperties = regionprops(newCC, 'BoundingBox');
+    newCCproperties = regionprops(newCC, 'BoundingBox', 'Image');
+       
+    CC_list{i}=newCC; %save the final cc for each mask
    
-    CC_list(i)=newCC; %save the final cc for each mask
+     windowCandidates = struct('x', [], 'y', [], 'w',[], 'h', []);
     
-    % % VISUALIZATION
-    % Plot in the image the resulting bounding boxes:
-    figure()
-    imshow(current_mask, [0 1])
-    hold on
+    % Clean mask: It has only the connected components that we previously
+    % accepted:
+    clean_mask = zeros(size(current_mask));
     for j = 1:newCC.NumObjects
-        x = newCCproperties(j).BoundingBox(1);
-        y = newCCproperties(j).BoundingBox(2);
+        x = floor(newCCproperties(j).BoundingBox(1));
+        y = floor(newCCproperties(j).BoundingBox(2));
         w = newCCproperties(j).BoundingBox(3);
         h = newCCproperties(j).BoundingBox(4);
-        plot([x x], [y y+h], 'y')
-        plot([x+w x+w], [y y+h], 'y')
-        plot([x x+w], [y y], 'y')
-        plot([x x+w], [y+h y+h], 'y')
+        %clean mask
+        clean_mask((y+1):(y+h), (x+1):(x+w)) = newCCproperties(j).Image;
+        %fill windowCandidates
+        windowCandidates(j).x=x;
+        windowCandidates(j).y=y;
+        windowCandidates(j).w=w;
+        windowCandidates(j).h=h;
     end
-    w = waitforbuttonpress;
+    
+    % Write mask:
+    imwrite(clean_mask, [outdir, '\', mask_file_list(i).name])
+        
+    %save mat of windows candidates
+    save(strcat(outdir,'\',mask_file_list(i).name(1:end-4),'.mat'),'windowCandidates');
+    
+%     % % VISUALIZATION
+%     % Plot in the image the resulting bounding boxes:
+%     figure()
+%     imshow(current_mask, [0 1])
+%     hold on
+%     for j = 1:newCC.NumObjects
+%         x = newCCproperties(j).BoundingBox(1);
+%         y = newCCproperties(j).BoundingBox(2);
+%         w = newCCproperties(j).BoundingBox(3);
+%         h = newCCproperties(j).BoundingBox(4);
+%         plot([x x], [y y+h], 'y')
+%         plot([x+w x+w], [y y+h], 'y')
+%         plot([x x+w], [y y], 'y')
+%         plot([x x+w], [y+h y+h], 'y')
+%     end
+%     w = waitforbuttonpress;
     
 end
 
