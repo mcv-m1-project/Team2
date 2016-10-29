@@ -2,7 +2,7 @@ function [mask, windowCandidates] = slidingWindowImage(im, width, height, stepW,
 
 %set the values ot im to 0 and 1
 im(im > 0) = 1;
-
+windowCandidates = [];
 windows = [];
 candidates = [];
 score = [];
@@ -14,7 +14,7 @@ for n=1:stepH:N-height
         filling_ratio = sum(sum(subIm))/(size(subIm,1)*size(subIm,2));
         %form_factor = width/height;
         if(filling_ratio > 0.5)
-            windows = [windows, struct('x',m,'y',n,'w',width,'h',height)];
+            %windows = [windows, struct('x',m,'y',n,'w',width,'h',height)];
             candidates = [candidates; m n width height];
             score = [score; filling_ratio];
         end
@@ -73,13 +73,15 @@ end
 %     end
 % end
 
-[windowCandidates,selectedScore] = selectStrongestBbox(candidates,score);
-
+[selectedCandidates,selectedScore] = selectStrongestBbox(candidates,score);
+for winDef=1:length(selectedCandidates)
+    windowCandidates = [windowCandidates, struct('x',selectedCandidates(winDef,1),'y',selectedCandidates(winDef,2),'w',selectedCandidates(winDef,3),'h',selectedCandidates(winDef,4))];
+end
 %Generate the final mask
-mask = im*0;
+ mask = im*0;
 for winDef=1:length(windowCandidates)
-    %mask(windowCandidates(winDef).y:windowCandidates(winDef).y+windowCandidates(winDef).h-1,windowCandidates(winDef).x:windowCandidates(winDef).x+windowCandidates(winDef).w-1) = im(windowCandidates(winDef).y:windowCandidates(winDef).y+windowCandidates(winDef).h-1,windowCandidates(winDef).x:windowCandidates(winDef).x+windowCandidates(winDef).w-1);
-    mask(windowCandidates(winDef,2):windowCandidates(winDef,2)+windowCandidates(winDef,4)-1,windowCandidates(winDef,1):windowCandidates(winDef,1)+windowCandidates(winDef,3)-1) = im(windowCandidates(winDef,2):windowCandidates(winDef,2)+windowCandidates(winDef,4)-1,windowCandidates(winDef,1):windowCandidates(winDef,1)+windowCandidates(winDef,3)-1);
+    mask(windowCandidates(winDef).y:windowCandidates(winDef).y+windowCandidates(winDef).h-1,windowCandidates(winDef).x:windowCandidates(winDef).x+windowCandidates(winDef).w-1) = im(windowCandidates(winDef).y:windowCandidates(winDef).y+windowCandidates(winDef).h-1,windowCandidates(winDef).x:windowCandidates(winDef).x+windowCandidates(winDef).w-1);
+    %mask(windowCandidates(winDef,2):windowCandidates(winDef,2)+windowCandidates(winDef,4)-1,windowCandidates(winDef,1):windowCandidates(winDef,1)+windowCandidates(winDef,3)-1) = im(windowCandidates(winDef,2):windowCandidates(winDef,2)+windowCandidates(winDef,4)-1,windowCandidates(winDef,1):windowCandidates(winDef,1)+windowCandidates(winDef,3)-1);
 end
 
 end
