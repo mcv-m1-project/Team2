@@ -1,22 +1,23 @@
-function [mask, window_candidates] = slidingWindow(im, width, height, stepW, stepH)
+function [time] = slidingWindow(data_set)
 
-window_candidates = [];
-mask = im*0;
+tic
+width = 1;
+height = 1;
+stepW = 5;
+stepH = 5;
 
-[M, N]=size(im);
-for m=1:stepW:M-width
-    for n=1:stepH:N-height
-        subIm = im(m:m+width,n:n+height);
-        filling_ratio = sum(sum(subIm))/(width*height);
-        form_factor = width/height; %¿Tiene sentido, depende de la ventana?
-        if(filling_ratio > 0.5)
-            window_candidates = [window_candidates, struct(m,n,width,height)];
-            mask(m:m+width,n:n+height) = mask(m:m+width,n:n+height) + im(m:m+width,n:n+height);
-        end
-    end
+files = listFiles(data_set);
+nFiles = length(files);
+if(7~=exist([data_set, '\result_masks\slidingWindow\'],'dir'))
+    mkdir([data_set, '\result_masks\slidingWindow\']);
 end
-
-%Delete overlapped detections
-
-
+for i=1:nFiles
+    fileId = files(i).name(1:9);
+    im = imread([data_set '\result_masks\morphological_operators\' fileId '.png']);
+    [mask, windowCandidates] = slidingWindow(im, width, height, stepW, stepH);
+    imwrite(mask,[data_set '\result_masks\slidingWindow\' fileId '.png']);
+    save([data_set '\result_masks\slidingWindow\' fileId '.mat'],'windowCandidates');
+end
+totalTime = toc;
+time = totalTime/nFiles;
 end
