@@ -8,6 +8,7 @@ inputMasksDir = [dataSetSelected, '\result_masks\morphological_operators\'];
 %Path to the train set truth masks
 dirGroundTruthMasks = [dataSetSelected '\mask'];
 
+[bestRecall, bestSize, bestFf] = slidingWindowTraining(dataSetSelected,ff_means,min_size,max_size);
 
 
 % % Summary of signal types:
