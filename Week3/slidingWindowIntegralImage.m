@@ -14,7 +14,7 @@ ii = cumsum(cumsum(double(im)),2);
 for n=1:stepH:N-height
     for m=1:stepW:M-width
         sumII = ii(min(N,n+height-1),min(M,m+width-1)) - ii(n,min(M,m+width-1)) - ii(min(N,n+height-1),m) + ii(n,m);
-        filling_ratio = sumII/height*width;
+        filling_ratio = sumII/((min(N,n+height-1) - n + 1)*(min(M,m+width-1) - m + 1));
         if(filling_ratio > 0.5)
             windows = [windows, struct('x',m,'y',n,'w',width,'h',height)];
             candidates = [candidates; m n width height];
