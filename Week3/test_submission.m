@@ -5,15 +5,15 @@
     addpath(genpath('.'))
 
     % Configure this
-    team              = 0;  % Your team number
-    week              = 1;  % Week number
+    team              = 2;  % Your team number
+    week              = 3;  % Week number
     window_evaluation = 1;  % Whether to perform or not window evaluation: 0 for weeks 1&2, 1 for weeks 3,4&5 
 
 
     % Do not make changes below this point ---------------------------------
     % If you find a bug, please report it to ramon.morros@upc.edu ----------
     test_dir   = '/home/ihcv00/DataSetCorrected/fake_test/';  % This folder contains fake masks and text annotations. Do not change this.
-    test_files = ListFiles(test_dir);
+    test_files = ListFiles(test_dir);    
 
     test_files_num = size(test_files,1);
 
