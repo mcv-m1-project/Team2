@@ -1,11 +1,17 @@
-function [time] = slidingWindow(data_set)
+function [time] = slidingWindow(data_set, min_size)
 
 tic
 %Window parameters
-width = 230;
-height = 210;
-stepW = round(0.5*width);
-stepH = round(0.5*height);
+window_size = 11912;
+form_factor = 0.874;
+step = 0.3;
+minSize = min(min_size);
+
+width = round(sqrt(window_size*form_factor));
+height = round(sqrt(window_size/form_factor));
+%Best result for the 30% step
+stepW = round(step*width);
+stepH = round(step*height);
 
 files = listFiles(data_set);
 nFiles = length(files);
@@ -19,11 +25,14 @@ end
 TP = 0;
 FN = 0;
 FP = 0;
+
+fr = (minSize*form_factor)/(width*height);
+        
 for i=1:nFiles
     fileId = files(i).name(1:9);
     im = imread([data_set '\result_masks\morphological_operators\' fileId '.png']);
-    [mask, windowCandidates] = slidingWindowImage(im, width, height, stepW, stepH);
-    %[mask, windowCandidates] = slidingWindowIntegralImage(im, width, height, stepW, stepH);
+    %[mask, windowCandidates] = slidingWindowImage(im, width, height, stepW, stepH, fr);
+    [mask, windowCandidates] = slidingWindowIntegralImage(im, width, height, stepW, stepH, fr);
     imwrite(mask,[data_set '\result_masks\slidingWindow\mask\' fileId '.png']);
     save([data_set '\result_masks\slidingWindow\' fileId '.mat'],'windowCandidates');
     
