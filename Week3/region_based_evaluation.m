@@ -25,12 +25,11 @@ FP = 0;
 FN = 0;
 
 for i=1:nFiles
-    fileId = files(i).name(4:12);
-    detections = load([dirBBoxResults '\' fileId '.mat']);
-    [annotations Signs] = LoadAnnotations([dirGroundTruth '\gt.' fileId '.txt']);
+    fileId = files(i).name(1:end-4);
+    detections = load([dirBBoxResults '\.' fileId '.mat']);
+    [annotations Signs] = LoadAnnotations([dirGroundTruth '\gt\gt.' fileId '.txt']);
 
-    
-    [regionTP, regionFN, regionFP] = PerformanceAccumulationWindow(detections.windowCandidadtes, annotations);
+    [regionTP, regionFN, regionFP] = PerformanceAccumulationWindow(detections.windowCandidates, annotations);
     TP = TP + regionTP;
     FN = FN + regionFN;
     FP = FP + regionFP;
