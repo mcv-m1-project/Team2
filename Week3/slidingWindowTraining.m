@@ -22,8 +22,8 @@ heightVec = [];
 
 for width=minWidth:round((maxWidth-minWidth)/5):maxWidth
     for height=minHeight:round((maxHeight-minHeight)/5):maxHeight
-        stepW = round(0.2*width);
-        stepH = round(0.2*height);
+        stepW = round(0.5*width);
+        stepH = round(0.5*height);
         
         TP = 0;
         FN = 0;
