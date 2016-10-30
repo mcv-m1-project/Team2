@@ -26,7 +26,7 @@ FN = 0;
 
 for i=1:nFiles
     fileId = files(i).name(1:end-4);
-    detections = load([dirBBoxResults '\.' fileId '.mat']);
+    detections = load([dirBBoxResults '\' fileId '.mat']);
     [annotations Signs] = LoadAnnotations([dirGroundTruth '\gt\gt.' fileId '.txt']);
 
     [regionTP, regionFN, regionFP] = PerformanceAccumulationWindow(detections.windowCandidates, annotations);
@@ -37,5 +37,16 @@ end
 
 [precision, recall, accuracy] = PerformanceEvaluationWindow(TP, FN, FP);
 F1 = 2*precision*recall/(precision+recall);
-
+               
+% Summary of signal types:
+fprintf('\nSummary of region based evaluation results:\n')
+ fprintf(['Precision | Accuracy | sensitivity | ', ...
+             'TP | FP | FN |\n'])
+for i = 1:size(precision)
+    fprintf(['%5.3f |\t%5.3f |\t%5.3f |\t', ...
+             '%5.0f | %5.0f | %5.0f |\n'], ...
+             precision(i), accuracy(i), recall(i), ...
+             TP(i), FP(i), FN(i))
+end
+F1
 end

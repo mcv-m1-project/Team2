@@ -19,8 +19,10 @@ for size=minSize:(maxSize-minSize)/5:maxSize
         width = round(sqrt(size.*ff));
         height = round(sqrt(size./ff));
         
-        stepW = round(0.1*width);
-        stepH = round(0.1*height);
+        stepW = round(0.3*width);
+        stepH = round(0.3*height);
+        
+        fr = (minSize*ff)/(width*height);
         
         TP = 0;
         FN = 0;
@@ -28,8 +30,8 @@ for size=minSize:(maxSize-minSize)/5:maxSize
         for i=1:nFiles
             fileId = files(i).name(1:9);
             im = imread([data_train '\result_masks\morphological_operators\' fileId '.png']);
-            [~, windowCandidates] = slidingWindowImage(im, width, height, stepW, stepH);
-            %[mask, windowCandidates] = slidingWindowIntegralImage(im, width, height, stepW, stepH);
+            [~, windowCandidates] = slidingWindowImage(im, width, height, stepW, stepH, fr);
+            %[mask, windowCandidates] = slidingWindowIntegralImage(im, width, height, stepW, stepH, fr);
             [annotations, ~] = LoadAnnotations([data_train '\gt\gt.' fileId '.txt']);
             [localTP,localFN,localFP] = PerformanceAccumulationWindow(windowCandidates, annotations);
             TP = TP + localTP;
@@ -47,6 +49,18 @@ for size=minSize:(maxSize-minSize)/5:maxSize
         ffVec = [ffVec ff];
     end
 end
+
+% % Summary of signal types:
+% fprintf('\nSummary of region based evaluation results:\n')
+%  fprintf(['Precision | Recall | F1 | ', ...
+%              'Size | FF |\n'])
+% for i = 1:size(precisionVec,2)
+%     fprintf(['%5.3f |\t%5.3f |\t%5.3f |\t', ...
+%              '%5.0f | %5.0f |\n'], ...
+%              precisionVec(i), recallVec(i), F1Vec(i), ...
+%              sizeVec(i), ffVec(i))
+% end
+save('region_evaluation_results', 'precisionVec', 'recallVec', 'F1Vec', 'sizeVec', 'ffVec');
 
 sizeMat = reshape(sizeVec,[6,6]);
 precisionMat = reshape(precisionVec,[6,6]);

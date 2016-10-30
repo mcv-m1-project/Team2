@@ -1,4 +1,4 @@
-function [mask, windowCandidates] = slidingWindowImage(im, width, height, stepW, stepH)
+function [mask, windowCandidates] = slidingWindowImage(im, width, height, stepW, stepH, fr)
 
 %set the values ot im to 0 and 1
 im(im > 0) = 1;
@@ -14,7 +14,7 @@ for n=1:stepH:N-height
         subIm = im(n:min(N,n+height-1),m:min(M,m+width-1));
         filling_ratio = sum(sum(subIm))/(size(subIm,1)*size(subIm,2));
         %form_factor = width/height;
-        if(filling_ratio > 0.5)
+        if(filling_ratio >= fr)
             windows = [windows, struct('x',m,'y',n,'w',width,'h',height)];
             candidates = [candidates; m n width height];
             score = [score; filling_ratio];
@@ -86,8 +86,5 @@ end
         mask(windowCandidates(winDef).y:windowCandidates(winDef).y+windowCandidates(winDef).h-1,windowCandidates(winDef).x:windowCandidates(winDef).x+windowCandidates(winDef).w-1) = im(windowCandidates(winDef).y:windowCandidates(winDef).y+windowCandidates(winDef).h-1,windowCandidates(winDef).x:windowCandidates(winDef).x+windowCandidates(winDef).w-1);
         %mask(windowCandidates(winDef,2):windowCandidates(winDef,2)+windowCandidates(winDef,4)-1,windowCandidates(winDef,1):windowCandidates(winDef,1)+windowCandidates(winDef,3)-1) = im(windowCandidates(winDef,2):windowCandidates(winDef,2)+windowCandidates(winDef,4)-1,windowCandidates(winDef,1):windowCandidates(winDef,1)+windowCandidates(winDef,3)-1);
     end
-% else
-%      mask = im*0;
-% end
 
 end
