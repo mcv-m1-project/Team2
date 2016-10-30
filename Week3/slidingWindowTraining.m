@@ -1,4 +1,4 @@
-function [bestF1, bestSize, bestFf] = slidingWindowTraining(data_train,formFactor,minSize,maxSize)
+function [bestRecall, bestSize, bestFf] = slidingWindowTraining(data_train,formFactor,minSize,maxSize)
 
 minSize = min(minSize);
 maxSize = max(maxSize);
@@ -19,8 +19,8 @@ for size=minSize:(maxSize-minSize)/5:maxSize
         width = round(sqrt(size.*ff));
         height = round(sqrt(size./ff));
         
-        stepW = round(0.4*width);
-        stepH = round(0.4*height);
+        stepW = round(0.1*width);
+        stepH = round(0.1*height);
         
         TP = 0;
         FN = 0;
@@ -55,13 +55,14 @@ ffMat = reshape(ffVec,[6,6]);
 F1Mat = reshape(F1Vec,[6,6]);
 
 bestF1 = max(max(F1Mat));
-bestSize = sizeMat(F1Mat==bestF1);
-bestFf = ffMat(F1Mat==bestF1);
+bestRecall = max(max(recallMat));
+bestSize = sizeMat(recallMat==bestRecall);
+bestFf = ffMat(recallMat==bestRecall);
 
-plot(precisionMat(:,1),recallMat(:,1),'b.-',precisionMat(:,2),recallMat(:,2),'g.-',precisionMat(:,3),recallMat(:,3),'r.-',precisionMat(:,4),recallMat(:,4),'m.-',precisionMat(:,5),recallMat(:,5),'y.-',precisionMat(:,6),recallMat(:,6),'c.-')
-title('Steps = 40% window size')
-xlabel('Precision')
-ylabel('Recall')
+plot(recallMat(:,1),precisionMat(:,1),'b.-',recallMat(:,2),precisionMat(:,2),'g.-',recallMat(:,3),precisionMat(:,3),'r.-',recallMat(:,4),precisionMat(:,4),'m.-',recallMat(:,5),precisionMat(:,5),'y.-',recallMat(:,6),precisionMat(:,6),'c.-')
+title('Steps = 10% window size')
+xlabel('Recall')
+ylabel('Precision')
 lgd = legend(num2str(sizeMat(1,1)),num2str(sizeMat(1,2)),num2str(sizeMat(1,3)),num2str(sizeMat(1,4)),num2str(sizeMat(1,5)),num2str(sizeMat(1,6)));
 title(lgd,'Window size')
 end
