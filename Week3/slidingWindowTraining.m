@@ -11,6 +11,11 @@ maxHeight = max(round(sqrt(maxSize./formFactor)));
 % signals_size.max_height = sqrt(max(max_size)/min(form_factor));
 % signals_size.min_height = sqrt(min(min_size)/max(form_factor));
 
+% minWidth = 220;
+% minHeight = 205;
+% maxWidth = 230;
+% maxHeight = 215;
+
 files = listFiles(data_train);
 nFiles = length(files);
 
@@ -22,8 +27,8 @@ heightVec = [];
 
 for width=minWidth:round((maxWidth-minWidth)/5):maxWidth
     for height=minHeight:round((maxHeight-minHeight)/5):maxHeight
-        stepW = round(0.5*width);
-        stepH = round(0.5*height);
+        stepW = round(0.1*width);
+        stepH = round(0.1*height);
         
         TP = 0;
         FN = 0;
@@ -33,13 +38,12 @@ for width=minWidth:round((maxWidth-minWidth)/5):maxWidth
             im = imread([data_train '\result_masks\morphological_operators\' fileId '.png']);
             [mask, windowCandidates] = slidingWindowImage(im, width, height, stepW, stepH);
             %[mask, windowCandidates] = slidingWindowIntegralImage(im, width, height, stepW, stepH);
-            if(size(windowCandidates,2)~=0)
-                [annotations Signs] = LoadAnnotations([data_train '\gt\gt.' fileId '.txt']);
-                [localTP,localFN,localFP] = PerformanceAccumulationWindow(windowCandidates, annotations);
-                TP = TP + localTP;
-                FN = FN + localFN;
-                FP = FP + localFP;
-            end
+            
+            [annotations Signs] = LoadAnnotations([data_train '\gt\gt.' fileId '.txt']);
+            [localTP,localFN,localFP] = PerformanceAccumulationWindow(windowCandidates, annotations);
+            TP = TP + localTP;
+            FN = FN + localFN;
+            FP = FP + localFP; 
         end
         [precision, recall, accuracy] = PerformanceEvaluationWindow(TP, FN, FP);
         F1 = 2*precision*recall/(precision+recall);
