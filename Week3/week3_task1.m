@@ -84,11 +84,18 @@ for i=1:n_mask
         windowCandidates(j).h=h;
     end
     
+    %when nothing is detected
+    if newCC.NumObjects==0
+        windowCandidates(1).x=0;
+        windowCandidates(1).y=0;
+        windowCandidates(1).w=0;
+        windowCandidates(1).h=0;
+    end
     % Write mask:
-    imwrite(clean_mask, [outdir, '\', mask_file_list(i).name])
+    imwrite(clean_mask, [outdir, '\.', mask_file_list(i).name])
         
     %save mat of windows candidates
-    save(strcat(outdir,'\',mask_file_list(i).name(1:end-4),'.mat'),'windowCandidates');
+    save(strcat(outdir,'\.',mask_file_list(i).name(1:end-4),'.mat'),'windowCandidates');
     
 %     % % VISUALIZATION
 %     % Plot in the image the resulting bounding boxes:
