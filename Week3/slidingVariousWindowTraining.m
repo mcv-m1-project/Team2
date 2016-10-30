@@ -3,8 +3,14 @@ function [precision,recall,F1] = slidingVariousWindowTraining(data_train)
 files = listFiles(data_train);
 nFiles = length(files);
 
-winSize=[11912,33915,55919];
-ff = [0.9661,1.0669,1.0669];
+% winSize=[915,11915,22916,33917,44918,55919];
+% ff = [0.9158,0.9661,0.8654,1.0165,1.0165,1.0165];
+
+winSize=[915,22916,55919];
+ff = [0.9158,0.8654,1.0165];
+
+% winSize = 915;
+% ff = 0.9158;
 
 TP = 0;
 FN = 0;
