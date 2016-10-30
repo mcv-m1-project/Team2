@@ -1,4 +1,4 @@
-function [mask, windowCandidates] = slidingWindowIntegralImage(im, width, height, stepW, stepH)
+function [mask, windowCandidates] = slidingWindowIntegralImage(im, width, height, stepW, stepH, fr)
 
 %set the values ot im to 0 and 1
 im(im > 0) = 1;
@@ -16,7 +16,7 @@ for n=1:stepH:N-height
 %         sumII = ii(min(N,n+height-1),min(M,m+width-1)) - ii(n,min(M,m+width-1)) - ii(min(N,n+height-1),m) + ii(n,m);
         sumII = ii(min(N,n+height-1),min(M,m+width-1)) - ii(max(1,n-1),min(M,m+width-1)) - ii(min(N,n+height-1),max(1,m-1)) + ii(max(1,n-1),max(1,m-1));
         filling_ratio = sumII/(min(N-n+1, height)*min(M-m+1,width));
-        if(filling_ratio > 0.5)
+        if(filling_ratio > fr)
             windows = [windows, struct('x',m,'y',n,'w',width,'h',height)];
             candidates = [candidates; m n width height];
             score = [score; filling_ratio];
