@@ -30,6 +30,7 @@ for size=minSize:(maxSize-minSize)/5:maxSize
             im = imread([data_train '\result_masks\morphological_operators\' fileId '.png']);
             [~, windowCandidates] = slidingWindowImage(im, width, height, stepW, stepH);
             %[mask, windowCandidates] = slidingWindowIntegralImage(im, width, height, stepW, stepH);
+%             [~, windowCandidates] = slidingWindowConvolution(im, width, height, stepW, stepH);
             [annotations, ~] = LoadAnnotations([data_train '\gt\gt.' fileId '.txt']);
             [localTP,localFN,localFP] = PerformanceAccumulationWindow(windowCandidates, annotations);
             TP = TP + localTP;
