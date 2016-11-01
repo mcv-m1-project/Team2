@@ -12,7 +12,7 @@ function generateTemplates( dirTrain, maxSize, formFactor )
 %   dirTrain --> Path to the training set
 %   maxSize --> vector with the max size of each traffic signal type (to
 %   determine the models size)
-%   formFactor --> vector withe the mean form factor of each traffic signal
+%   formFactor --> vector with the mean form factor of each traffic signal
 %   type (to determine the models form factor)
 
     addpath('..')
@@ -22,6 +22,7 @@ function generateTemplates( dirTrain, maxSize, formFactor )
     
     maxSizeCircle = max([maxSize(3),maxSize(4),maxSize(5)]);
     meanFfCircle = mean([formFactor(3),formFactor(4),formFactor(5)]);
+    % [Height Width] 
     circleSize = [round(sqrt(maxSizeCircle/meanFfCircle)), round(sqrt(maxSizeCircle*meanFfCircle))];
     circleTemp = zeros([circleSize,3]);
     circleCount = 0;
@@ -41,7 +42,7 @@ function generateTemplates( dirTrain, maxSize, formFactor )
         gt = [dirTrain, '\gt\gt.',strrep(files(i).name, '.jpg', '.txt')];
         [annotations signs] = LoadAnnotations(gt);
         for j=1:length(signs)
-            imMasked = double(imcrop(im.*mask,[annotations(j).x,annotations(j).y,annotations(j).w,annotations(j).h]));
+            imMasked = double(imcrop(im.*mask,[annotations(j).x,annotations(j).y,annotations(j).w - 1,annotations(j).h - 1]));
             switch signs{j}
                 case 'A'
                     imMasked = imresize(imMasked,upTriangleSize);
@@ -66,7 +67,7 @@ function generateTemplates( dirTrain, maxSize, formFactor )
     downTriangleTemp = uint8(round(downTriangleTemp/downTriangleCount));
     squareTemp = uint8(round(squareTemp/squareCount));
     circleTemp = uint8(round(circleTemp/circleCount));
-    save('colorModels','upTriangleTemp','downTriangleTemp','squareTemp','circleTemp');
+    save('colorModels','upTriangleTemp_color','downTriangleTemp_color','squareTemp_color','circleTemp_color');
     
     figure,
     subplot(4,4,1),imshow(upTriangleTemp)
@@ -78,7 +79,7 @@ function generateTemplates( dirTrain, maxSize, formFactor )
     downTriangleTemp = rgb2gray(downTriangleTemp);
     squareTemp = rgb2gray(squareTemp);
     circleTemp = rgb2gray(circleTemp);
-    save('grayModels','upTriangleTemp','downTriangleTemp','squareTemp','circleTemp');
+    save('grayModels','upTriangleTemp_gray','downTriangleTemp_gray','squareTemp_gray','circleTemp_gray');
 
     subplot(4,4,5),imshow(upTriangleTemp)
     subplot(4,4,6),imshow(downTriangleTemp)
@@ -100,7 +101,7 @@ function generateTemplates( dirTrain, maxSize, formFactor )
     downTriangleTemp(downTriangleTemp > 0) = 1;
     squareTemp(squareTemp > 0) = 1;
     circleTemp(circleTemp > 0) = 1;
-    save('maskModels','upTriangleTemp','downTriangleTemp','squareTemp','circleTemp');
+    save('maskModels','upTriangleTemp_mask','downTriangleTemp_mask','squareTemp_mask','circleTemp_mask');
     
     subplot(4,4,9),imshow(upTriangleTemp,[0 1])
     subplot(4,4,10),imshow(downTriangleTemp,[0 1])
