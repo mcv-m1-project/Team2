@@ -63,33 +63,33 @@ function generateTemplates( dirTrain, maxSize, formFactor )
             end
         end
     end
-    upTriangleTemp = uint8(round(upTriangleTemp/upTriangleCount));
-    downTriangleTemp = uint8(round(downTriangleTemp/downTriangleCount));
-    squareTemp = uint8(round(squareTemp/squareCount));
-    circleTemp = uint8(round(circleTemp/circleCount));
+    upTriangleTemp_color = uint8(round(upTriangleTemp/upTriangleCount));
+    downTriangleTemp_color = uint8(round(downTriangleTemp/downTriangleCount));
+    squareTemp_color = uint8(round(squareTemp/squareCount));
+    circleTemp_color = uint8(round(circleTemp/circleCount));
     save('colorModels','upTriangleTemp_color','downTriangleTemp_color','squareTemp_color','circleTemp_color');
     
     figure,
-    subplot(4,4,1),imshow(upTriangleTemp)
-    subplot(4,4,2),imshow(downTriangleTemp)
-    subplot(4,4,3),imshow(squareTemp)
-    subplot(4,4,4),imshow(circleTemp)
+    subplot(4,4,1),imshow(upTriangleTemp_color)
+    subplot(4,4,2),imshow(downTriangleTemp_color)
+    subplot(4,4,3),imshow(squareTemp_color)
+    subplot(4,4,4),imshow(circleTemp_color)
     
-    upTriangleTemp = rgb2gray(upTriangleTemp);
-    downTriangleTemp = rgb2gray(downTriangleTemp);
-    squareTemp = rgb2gray(squareTemp);
-    circleTemp = rgb2gray(circleTemp);
+    upTriangleTemp_gray = rgb2gray(upTriangleTemp_color);
+    downTriangleTemp_gray = rgb2gray(downTriangleTemp_color);
+    squareTemp_gray = rgb2gray(squareTemp_color);
+    circleTemp_gray = rgb2gray(circleTemp_color);
     save('grayModels','upTriangleTemp_gray','downTriangleTemp_gray','squareTemp_gray','circleTemp_gray');
 
-    subplot(4,4,5),imshow(upTriangleTemp)
-    subplot(4,4,6),imshow(downTriangleTemp)
-    subplot(4,4,7),imshow(squareTemp)
-    subplot(4,4,8),imshow(circleTemp)
+    subplot(4,4,5),imshow(upTriangleTemp_gray)
+    subplot(4,4,6),imshow(downTriangleTemp_gray)
+    subplot(4,4,7),imshow(squareTemp_gray)
+    subplot(4,4,8),imshow(circleTemp_gray)
     
-    upTriangleEdges = edge(upTriangleTemp,'canny');
-    downTriangleEdges = edge(downTriangleTemp,'canny');
-    squareEdges = edge(squareTemp,'canny');
-    circleEdges = edge(circleTemp,'canny');
+    upTriangleEdges = edge(upTriangleTemp_gray,'canny');
+    downTriangleEdges = edge(downTriangleTemp_gray,'canny');
+    squareEdges = edge(squareTemp_gray,'canny');
+    circleEdges = edge(circleTemp_gray,'canny');
     save('edgesModels','upTriangleEdges','downTriangleEdges','squareEdges','circleEdges');
 
     subplot(4,4,13),imshow(upTriangleEdges,[0 1])
@@ -97,16 +97,20 @@ function generateTemplates( dirTrain, maxSize, formFactor )
     subplot(4,4,15),imshow(squareEdges,[0 1])
     subplot(4,4,16),imshow(circleEdges,[0 1])
     
-    upTriangleTemp(upTriangleTemp > 0) = 1;
-    downTriangleTemp(downTriangleTemp > 0) = 1;
-    squareTemp(squareTemp > 0) = 1;
-    circleTemp(circleTemp > 0) = 1;
+    upTriangleTemp_gray(upTriangleTemp_gray > 0) = 1;
+    upTriangleTemp_mask = upTriangleTemp_gray;
+    downTriangleTemp_gray(downTriangleTemp_gray > 0) = 1;
+    downTriangleTemp_mask = downTriangleTemp_gray;
+    squareTemp_gray(squareTemp_gray > 0) = 1;
+    squareTemp_mask = squareTemp_gray;
+    circleTemp_gray(circleTemp_gray > 0) = 1;
+    circleTemp_mask = circleTemp_gray;
     save('maskModels','upTriangleTemp_mask','downTriangleTemp_mask','squareTemp_mask','circleTemp_mask');
     
-    subplot(4,4,9),imshow(upTriangleTemp,[0 1])
-    subplot(4,4,10),imshow(downTriangleTemp,[0 1])
-    subplot(4,4,11),imshow(squareTemp,[0 1])
-    subplot(4,4,12),imshow(circleTemp,[0 1])
+    subplot(4,4,9),imshow(upTriangleTemp_mask,[0 1])
+    subplot(4,4,10),imshow(downTriangleTemp_mask,[0 1])
+    subplot(4,4,11),imshow(squareTemp_mask,[0 1])
+    subplot(4,4,12),imshow(circleTemp_mask,[0 1])
     
 
 end
