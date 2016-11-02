@@ -50,8 +50,8 @@ thresholdDT = 10;
 % Loop over images:
 for idx = 1:length(imageslist)
     % Reading the image and converting to double:
-    file = imageslist(idx).name;
-    image = double(imread([dirtrain, '\', file]));
+    filename = [dirtrain, '\', imageslist(idx).name];
+    image = double(imread(filename));
     
     % Converting to grayscale:
     image_grey = (image(:,:,1) + image(:,:,2) + image(:,:,3)) / (3 * 255);
