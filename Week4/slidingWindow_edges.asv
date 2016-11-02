@@ -18,9 +18,6 @@ load('DTModels.mat')
 % ones loaded previously.
 DT = cell(4);
 
-% Apply Distance Transform to image:
-image_dt = bwdist(image_edges);
-
 % Loop over sizes:
 for sizefactor = sizesrange
     % Resizing width and height:
@@ -30,7 +27,7 @@ for sizefactor = sizesrange
     stepW = max(round(stepW0 * sizefactor), 1);
     stepH = max(round(stepH0 * sizefactor), 1);
     % Resizing threshold (to be consisten with the size of the window):
-    thresholdDT_resized = thresholdDT * sizefactor;
+    thresholdDT_resized = 
     
     % Adjust size of DT to fit the windows:
     DT{1} = imresize(circleDT, [height, width]);
@@ -39,21 +36,14 @@ for sizefactor = sizesrange
     DT{4} = imresize(downTriangleDT, [height, width]);
 
     % Trying all windows over the image:
-    filas = length(stepH : N-height+1)
-    columnas = length(1 : stepW : M-width+1)
-    scores = zeros(filas, columnas);
-    fila = 0;
-    colum = 0;
     for n = 1 : stepH : N-height+1
-        fila = fila + 1;
         for m = 1 : stepW : M-width+1
-            colum = colum + 1;
             % Content of the image in the window:
-            subIm = image_dt(n : n+height-1, m : m+width-1);
+            subIm = image_edges(n : n+height-1, m : m+width-1);
 
             % We try with the four different signals shapes:
             % (circle, square, and up and down triangles)
-            minWindowScore = height * width * sqrt(height * width); % Initialize with a very high value.
+            minWindowScore = 0;
             for signal_shape = 1:4
                 % Sum of product of the Distance Transform and the edges in 
                 % the window:
@@ -62,18 +52,13 @@ for sizefactor = sizesrange
                 % Minimum score between the different shapes:
                 minWindowScore = min(minWindowScore, windowScore);
             end
-            % Normalize the score to avoid selecting regions with no
-            % contours, or very few:
-            minWindowScore = minWindowScore / max(1, sum(sum(subIm)));
-            
-            scores(fila, colum) = minWindowScore;
 
-%             % Deciding if the window is a candidate:
-%             if(minWindowScore < thresholdDT_resized)
-%                 windows = [windows, struct('x', m, 'y', n, 'w', width, 'h', height)];
-% %                 candidates = [candidates; m, n, width, height];
-% %                 score = [score; minWindowScore];
-%             end
+            % Deciding if the window is a candidate:
+            if(minWindowScore < thresholdDT_resized)
+                windows = [windows, struct('x', m, 'y', n, 'w', width, 'h', height)];
+%                 candidates = [candidates; m, n, width, height];
+%                 score = [score; minWindowScore];
+            end
         end
     end
 end
