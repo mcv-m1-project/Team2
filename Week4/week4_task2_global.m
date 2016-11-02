@@ -36,9 +36,10 @@ dirtrain = [pwd, '\..\..\train'];
 % List of train images:
 imageslist = listFiles(dirtrain);
 
-for file = imageslist
+for i = 1 : size(imageslist,1)
     % Reading the image and converting to double:
-    image = double(imread(dirtrain, '\', file));
+    file=strcat(dirtrain, '\', imageslist(i).name);
+    image = double(imread(file));
     
     % Converting to grayscale:
     image_grey = (image(:,:,1) + image(:,:,2) + image(:,:,3)) / (3 * 255);
