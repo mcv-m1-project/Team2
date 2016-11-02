@@ -17,8 +17,11 @@ load('DTModels.mat')
 % ones loaded previously.
 DT = cell(4);
 
+%define some threshold detect for testing
+thresholdDT = 500;
+
 % Loop over sizes:
-for sizefactor = sizesrange
+for sizefactor = 1:sizesrange
     % Resizing width and height:
     height = round(height0 * sizefactor);
     width = round(width0 * sizefactor);
@@ -36,29 +39,46 @@ for sizefactor = sizesrange
     for n = 1 : stepH : N-height+1
         for m = 1 : stepW : M-width+1
             % Content of the image in the window:
-            subIm = image_edges(n : n+height-1, m : m+width-1);
+            subIm = image_edges(n : min(N, n+height-1), m : min(M,m+width-1));
 
             % We try with the four different signals shapes:
             % (circle, square, and up and down triangles)
-            maxWindowScore = 0;
+            minWindowScore = 0;
             for signal_shape = 1:4
                 % Sum of product of the Distance Transform and the edges in 
                 % the window:
                 windowScore = sum(sum(DT{signal_shape} .* subIm));
                 
                 % Maxmum score between the different shapes:
-                maxWindowScore = max(maxWindowScore, windowScore);
+                minWindowScore = min(minWindowScore, windowScore);
             end
 
+            
             % Deciding if the window is a candidate:
-            if(maxWindowScore > thresholdDT)
+            if(minWindowScore < thresholdDT)
                 windows = [windows, struct('x', m, 'y', n, 'w', width, 'h', height)];
                 candidates = [candidates; m, n, width, height];
-                score = [score; filling_ratio];
+                %score = [score; filling_ratio];
             end
         end
     end
 end
+
+%draw windows candidates
+% img_candidates = image_edges;
+% figure()
+% imshow(img_candidates, [0 1])
+% for i=1:size(windows,1)
+%     hold on
+%     x = windows(i).x;
+%     y = windows(i).y;
+%     w = windows(i).w;
+%     h = windows(i).h;
+%     plot([x x], [y y+h], 'y')
+%     plot([x+w x+w], [y y+h], 'y')
+%     plot([x x+w], [y y], 'y')
+%     plot([x x+w], [y+h y+h], 'y')
+% end
 
 
 % Delete overlapped detections (union)
