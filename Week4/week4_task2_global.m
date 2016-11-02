@@ -1,6 +1,31 @@
 clearvars
 close all
 
+% Computing Distance Transforms of model signals:
+load('edgesModels.mat')
+circleDT = bwdist(circleEdges);
+squareDT = bwdist(squareEdges);
+upTriangleDT = bwdist(upTriangleEdges);
+downTriangleDT = bwdist(downTriangleEdges);
+save('DTModels.mat', 'circleDT', 'squareDT', 'upTriangleDT', 'downTriangleDT')
+figure()
+subplot(2,4,1)
+imshow(circleEdges)
+subplot(2,4,2)
+imshow(circleDT, [0, max(max(circleDT))])
+subplot(2,4,3)
+imshow(squareEdges)
+subplot(2,4,4)
+imshow(squareDT, [0, max(max(squareDT))])
+subplot(2,4,5)
+imshow(upTriangleEdges)
+subplot(2,4,6)
+imshow(upTriangleDT, [0, max(max(upTriangleDT))])
+subplot(2,4,7)
+imshow(downTriangleEdges)
+subplot(2,4,8)
+imshow(downTriangleDT, [0, max(max(downTriangleDT))])
+
 % Parameters for Canny edge detector:
 threshold = [0.1, 0.25];
 sigma = 2;

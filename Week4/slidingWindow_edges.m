@@ -1,4 +1,4 @@
-function [mask, windowCandidates] = slidingWindow_edges(image_edges, width, height, stepW, stepH, sizes)
+function [mask, windowCandidates] = slidingWindow_edges(image_edges, width0, height0, stepW0, stepH0, sizesrange)
 
 % Initializing structures:
 windowCandidates = [];
@@ -7,43 +7,55 @@ candidates = [];
 score = [];
 
 % Loading Distance Transforms of model signals:
-load('distanceTransformsModels.mat')
+load('DTModels.mat')
 
 % Size of image:
-[N, M]=size(image_edges);
+[N, M] = size(image_edges);
 
-%%%%%%%%%%%%  ADD SIZES  !!!!!!!!
+% Initialize cell array with the Distance Transform models. In this cell
+% array, these models will be resized, so they will not be the same as the
+% ones loaded previously.
+DT = cell(4);
 
-% Trying all windows over the image:
-for n = 1 : stepH : N-height+1
-    for m = 1 : stepW : M-width+1
-        % Content of the image in the window:
-        subIm = image_edges(n : n+height-1, m : m+width-1);
-        
-        % Distance measure..........
-        
-        % We try with the four different signals shapes:
-        % (circle, square, and up and down triangles)
-        for signal_shape = 1:4
-            
-            %%%% CHOOSE DT !!!!
-            %%%% ADJUST SIZE OF DT !!!!
-            
-            % Sum of product of the Distance Transform and the edges in 
-            % the window:
-            sumProdDT = sum(sum(DT .* subIm));
-            
-            if(sumProdDT > thresholdDT)
+% Loop over sizes:
+for sizefactor = sizesrange
+    % Resizing width and height:
+    height = round(height0 * sizefactor);
+    width = round(width0 * sizefactor);
+    % Resizing the steps:
+    stepW = round(stepW0 * sizefactor);
+    stepH = round(stepH0 * sizefactor);
+    
+    % Adjust size of DT to fit the windows:
+    DT{1} = imresize(circleDT, [height, width]);
+    DT{2} = imresize(squareDT, [height, width]);
+    DT{3} = imresize(uptriangleDT, [height, width]);
+    DT{4} = imresize(downtriangleDT, [height, width]);
+
+    % Trying all windows over the image:
+    for n = 1 : stepH : N-height+1
+        for m = 1 : stepW : M-width+1
+            % Content of the image in the window:
+            subIm = image_edges(n : n+height-1, m : m+width-1);
+
+            % We try with the four different signals shapes:
+            % (circle, square, and up and down triangles)
+            maxWindowScore = 0;
+            for signal_shape = 1:4
+                % Sum of product of the Distance Transform and the edges in 
+                % the window:
+                windowScore = sum(sum(DT{signal_shape} .* subIm));
                 
+                % Maxmum score between the different shapes:
+                maxWindowScore = max(maxWindowScore, windowScore);
             end
-            
-        end
-        
-        % Condition about distance meausre.......
-        if()
-            windows = [windows, struct('x', m, 'y', n, 'w', width, 'h', height)];
-            candidates = [candidates; m, n, width, height];
-            score = [score; filling_ratio];
+
+            % Deciding if the window is a candidate:
+            if(maxWindowScore > thresholdDT)
+                windows = [windows, struct('x', m, 'y', n, 'w', width, 'h', height)];
+                candidates = [candidates; m, n, width, height];
+                score = [score; filling_ratio];
+            end
         end
     end
 end
