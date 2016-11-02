@@ -6,19 +6,22 @@ windows = [];
 candidates = [];
 score = [];
 
-% Loading Distance Transforms of model signals:
-load('DTModels.mat')
+% Loading edges templates of model signals:
+load('edgesModels.mat')
 
 % Size of image:
 [N, M] = size(image_edges);
 
-% Initialize cell array with the Distance Transform models. In this cell
+% Initialize cell array with the templates models. In this cell
 % array, these models will be resized, so they will not be the same as the
 % ones loaded previously.
-DT = cell(4);
+templates = cell(4);
 
 %define some threshold detect for testing
 thresholdDT = 500;
+
+%calculate distance transform of edge's image
+bwdist(image_edges);
 
 % Loop over sizes:
 for sizefactor = 1:sizesrange
@@ -29,11 +32,11 @@ for sizefactor = 1:sizesrange
     stepW = round(stepW0 * sizefactor);
     stepH = round(stepH0 * sizefactor);
     
-    % Adjust size of DT to fit the windows:
-    DT{1} = imresize(circleDT, [height, width]);
-    DT{2} = imresize(squareDT, [height, width]);
-    DT{3} = imresize(upTriangleDT, [height, width]);
-    DT{4} = imresize(downTriangleDT, [height, width]);
+    % Adjust size of models to fit the windows:
+    templates{1} = imresize(circleEdges, [height, width]);
+    templates{2} = imresize(squareEdges, [height, width]);
+    templates{3} = imresize(upTriangleEdges, [height, width]);
+    templates{4} = imresize(downTriangleEdges, [height, width]);
 
     % Trying all windows over the image:
     for n = 1 : stepH : N-height+1
@@ -47,38 +50,42 @@ for sizefactor = 1:sizesrange
             for signal_shape = 1:4
                 % Sum of product of the Distance Transform and the edges in 
                 % the window:
-                windowScore = sum(sum(DT{signal_shape} .* subIm));
+                windowScore = sum(sum(templates{signal_shape} .* subIm));
                 
                 % Maxmum score between the different shapes:
-                minWindowScore = min(minWindowScore, windowScore);
+                if windowScore>0
+                    minWindowScore = min(minWindowScore, windowScore);
+                end
             end
 
             
             % Deciding if the window is a candidate:
             if(minWindowScore < thresholdDT)
+                minWindowScore
                 windows = [windows, struct('x', m, 'y', n, 'w', width, 'h', height)];
                 candidates = [candidates; m, n, width, height];
                 %score = [score; filling_ratio];
+                score = [score; minWindowScore];
             end
         end
     end
 end
 
 %draw windows candidates
-% img_candidates = image_edges;
-% figure()
-% imshow(img_candidates, [0 1])
-% for i=1:size(windows,1)
-%     hold on
-%     x = windows(i).x;
-%     y = windows(i).y;
-%     w = windows(i).w;
-%     h = windows(i).h;
-%     plot([x x], [y y+h], 'y')
-%     plot([x+w x+w], [y y+h], 'y')
-%     plot([x x+w], [y y], 'y')
-%     plot([x x+w], [y+h y+h], 'y')
-% end
+img_candidates = image_edges;
+figure()
+imshow(img_candidates, [0 1])
+for i=1:size(windows,1)
+    hold on
+    x = windows(i).x;
+    y = windows(i).y;
+    w = windows(i).w;
+    h = windows(i).h;
+    plot([x x], [y y+h], 'y')
+    plot([x+w x+w], [y y+h], 'y')
+    plot([x x+w], [y y], 'y')
+    plot([x x+w], [y+h y+h], 'y')
+end
 
 
 % Delete overlapped detections (union)
