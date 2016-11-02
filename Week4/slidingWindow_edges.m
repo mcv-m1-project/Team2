@@ -29,8 +29,8 @@ for sizefactor = sizesrange
     % Adjust size of DT to fit the windows:
     DT{1} = imresize(circleDT, [height, width]);
     DT{2} = imresize(squareDT, [height, width]);
-    DT{3} = imresize(uptriangleDT, [height, width]);
-    DT{4} = imresize(downtriangleDT, [height, width]);
+    DT{3} = imresize(upTriangleDT, [height, width]);
+    DT{4} = imresize(downTriangleDT, [height, width]);
 
     % Trying all windows over the image:
     for n = 1 : stepH : N-height+1
