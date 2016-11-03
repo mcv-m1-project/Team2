@@ -4,25 +4,14 @@ close all
 % Load signals parameters:
 load('signals_main_parameters.mat')
 
-% Computing Distance Transforms of model signals:
-load('edgesModels.mat')
-circleDT = circleEdges;
-squareDT = squareEdges;
-upTriangleDT = upTriangleEdges;
-downTriangleDT = downTriangleEdges;
-% Make them all the same size, and adjusted to the mean form factor:
-nrowDT = size(circleDT, 1);
-ncolDT = round(nrowDT * mean(form_factor));
-circleDT = imresize(circleDT, [nrowDT, ncolDT]);
-squareDT = imresize(squareDT, [nrowDT, ncolDT]);
-upTriangleDT = imresize(upTriangleDT, [nrowDT, ncolDT]);
-downTriangleDT = imresize(downTriangleDT, [nrowDT, ncolDT]);
-% Save models:
-save('DTModels.mat', 'circleDT', 'squareDT', 'upTriangleDT', 'downTriangleDT')
+% Loading edges templates of model signals:
+load('edgesModels_resized.mat')
+height0 = size(circleEdges, 1);
+width0 = size(circleEdges, 2);
 
 % Parameters for Canny edge detector:
 threshold = [0.1, 0.25];
-sigma = 2;
+sigma = 1;
 
 % Train data set directory:
 dirtrain = [pwd, '\..\..\train'];
@@ -31,21 +20,19 @@ dirtrain = [pwd, '\..\..\train'];
 imageslist = listFiles(dirtrain);
 
 % Size of windows:
-nsizes = 10;
+nsizes = 3;
 minimum_area = min(min_size);
 maximum_area = max(max_size);
-minsize = minimum_area / (nrowDT * ncolDT);
-maxsize = maximum_area / (nrowDT * ncolDT);
+minsize = (minimum_area + (maximum_area - minimum_area) / 4) / (height0 * width0);
+maxsize = maximum_area * 1.1 / (height0 * width0);
 sizesrange = minsize : (maxsize - minsize) / (nsizes - 1) : maxsize;
-height0 = nrowDT;
-width0 = ncolDT;
 
 % Step between windows:
 stepH0 = height0 * 0.1;
 stepW0 = width0 * 0.1;
 
 % Threshold:
-thresholdDT = 10;
+thresholdDT = 25000;
 
 % Loop over images:
 for idx = 1:length(imageslist)
@@ -62,6 +49,15 @@ for idx = 1:length(imageslist)
     % Sweep templates across image:
 %     [mask, windowCandidates] = slidingWindow_edges(image_edges, width0, height0, stepW0, stepH0, sizesrange, thresholdDT);
     windowCandidates = slidingWindow_edges(image_edges, width0, height0, stepW0, stepH0, sizesrange, thresholdDT);
+    
+    % Compute mask:
+    mask = compute_mask_edges(windowCandidates, image_grey);
+    
+    figure()
+    subplot(1,2,1)
+    imshow(image_grey)
+    subplot(1,2,2)
+    imshow(mask)
 end
 
 

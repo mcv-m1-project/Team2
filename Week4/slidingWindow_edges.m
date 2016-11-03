@@ -8,7 +8,7 @@ candidates = [];
 score = [];
 
 % Loading edges templates of model signals:
-load('edgesModels.mat')
+load('edgesModels_resized.mat')
 
 % Size of image:
 [N, M] = size(image_edges);
@@ -18,9 +18,6 @@ load('edgesModels.mat')
 % ones loaded previously.
 templates = cell(4);
 
-%define some threshold detect for testing
-thresholdDT = 500;
-
 %calculate distance transform of edge's image
 bwdist(image_edges);
 
@@ -28,32 +25,35 @@ bwdist(image_edges);
 image_dt = bwdist(image_edges);
 
 % Loop over sizes:
-for sizefactor = 1:sizesrange
+for sizefactor = sizesrange
+    
+    sizefactor
+    
     % Resizing width and height:
-    height = max(round(height0 * sizefactor), 1);
-    width = max(round(width0 * sizefactor), 1);
+    height = max(round(height0 * sqrt(sizefactor)), 1);
+    width = max(round(width0 * sqrt(sizefactor)), 1);
     % Resizing the steps:
     stepW = max(round(stepW0 * sizefactor), 1);
     stepH = max(round(stepH0 * sizefactor), 1);
     % Resizing threshold (to be consisten with the size of the window):
-    thresholdDT_resized = thresholdDT * sizefactor;
+    thresholdDT_resized = thresholdDT * sizefactor^2;
     
     % Adjust size of models to fit the windows:
-    templates{1} = imresize(circleEdges, [height, width]);
-    templates{2} = imresize(squareEdges, [height, width]);
-    templates{3} = imresize(upTriangleEdges, [height, width]);
-    templates{4} = imresize(downTriangleEdges, [height, width]);
+    templates{1} = imresize(circleEdges * 255, [height, width]) / 255;
+    templates{2} = imresize(squareEdges * 255, [height, width]) / 255;
+    templates{3} = imresize(upTriangleEdges * 255, [height, width]) / 255;
+    templates{4} = imresize(downTriangleEdges * 255, [height, width]) / 255;
 
     % Trying all windows over the image:
-    filas = length(stepH : N-height+1)
-    columnas = length(1 : stepW : M-width+1)
-    scores = zeros(filas, columnas);
-    fila = 0;
-    colum = 0;
+%     filas = length(1 : stepH : N-height+1)
+%     columnas = length(1 : stepW : M-width+1)
+%     scores = zeros(filas, columnas);
+%     fila = 0;
     for n = 1 : stepH : N-height+1
-        fila = fila + 1;
+%         fila = fila + 1;
+%         colum = 0;
         for m = 1 : stepW : M-width+1
-            colum = colum + 1;
+%             colum = colum + 1;
             % Content of the image in the window:
             subIm = image_dt(n : n+height-1, m : m+width-1);
 
@@ -68,37 +68,37 @@ for sizefactor = 1:sizesrange
                 % Minimum score between the different shapes:
                 minWindowScore = min(minWindowScore, windowScore);
             end
-            % Normalize the score to avoid selecting regions with no
-            % contours, or very few:
-            minWindowScore = minWindowScore / max(1, sum(sum(subIm)));
             
-            scores(fila, colum) = minWindowScore;
+%             scores(fila, colum) = minWindowScore;
 
-%             % Deciding if the window is a candidate:
-%             if(minWindowScore < thresholdDT_resized)
-%                 windows = [windows, struct('x', m, 'y', n, 'w', width, 'h', height)];
-% %                 candidates = [candidates; m, n, width, height];
-% %                 score = [score; minWindowScore];
-%             end
+            % Deciding if the window is a candidate:
+            if(minWindowScore < thresholdDT_resized)
+                fprintf('%f     %f\n', minWindowScore, thresholdDT_resized)
+                windows = [windows, struct('x', m, 'y', n, 'w', width, 'h', height)];
+%                 candidates = [candidates; m, n, width, height];
+%                 score = [score; minWindowScore];
+            end
         end
     end
 end
 
-%draw windows candidates
-img_candidates = image_edges;
-figure()
-imshow(img_candidates, [0 1])
-for i=1:size(windows,1)
-    hold on
-    x = windows(i).x;
-    y = windows(i).y;
-    w = windows(i).w;
-    h = windows(i).h;
-    plot([x x], [y y+h], 'y')
-    plot([x+w x+w], [y y+h], 'y')
-    plot([x x+w], [y y], 'y')
-    plot([x x+w], [y+h y+h], 'y')
-end
+% %draw windows candidates
+% figure()
+% % img_candidates = image_edges;
+% % imshow(img_candidates, [0 1])
+% imshow(image_dt, [0 255])
+% hold on
+% for i=1:length(windows)
+%     i
+%     x = windows(i).x;
+%     y = windows(i).y;
+%     w = windows(i).w;
+%     h = windows(i).h;
+%     plot([x x], [y y+h], 'y')
+%     plot([x+w x+w], [y y+h], 'y')
+%     plot([x x+w], [y y], 'y')
+%     plot([x x+w], [y+h y+h], 'y')
+% end
 
 
 % Delete overlapped detections (union)
@@ -146,7 +146,7 @@ if(0 == isempty(windows))
         
         % If the window is not overlapped with any other, we consider it:
         if(new == 1)
-            windowCandidates = [windowCandidates windows(winPos)];
+            windowCandidates = [windowCandidates, windows(winPos)];
         end
     end
 end
