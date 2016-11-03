@@ -4,13 +4,13 @@ close all
 % Load signals parameters:
 load('signals_main_parameters.mat')
 
-% Loading edges templates of model signals:
-load('edgesModels_resized.mat')
-height0 = size(circleEdges, 1);
-width0 = size(circleEdges, 2);
+% Loading model signals (here is just to adjust the sizes):
+load('grayModels.mat')
+height0 = size(circleTemp, 1);
+width0 = size(circleTemp, 2);
 
 % Parameters for Canny edge detector:
-threshold = [0.1, 0.25];
+threshold_canny = [0.05, 0.2];
 sigma = 1;
 
 % Train data set directory:
@@ -31,34 +31,37 @@ sizesrange = minsize : (maxsize - minsize) / (nsizes - 1) : maxsize;
 stepH0 = height0 * 0.1;
 stepW0 = width0 * 0.1;
 
-% Threshold:
-thresholdDT = 25000;
+% Threshold for accepting a window:
+thresholdDT = 10000;
 
-% Loop over images:
-for idx = 1:length(imageslist)
-    % Reading the image and converting to double:
-    filename = [dirtrain, '\', imageslist(idx).name];
-    image = double(imread(filename));
-    
-    % Converting to grayscale:
-    image_grey = (image(:,:,1) + image(:,:,2) + image(:,:,3)) / (3 * 255);
-    
-    % Computing edges:
-    image_edges = edge(image_grey, 'canny', threshold, 'both', sigma);
-    
-    % Sweep templates across image:
-%     [mask, windowCandidates] = slidingWindow_edges(image_edges, width0, height0, stepW0, stepH0, sizesrange, thresholdDT);
-    windowCandidates = slidingWindow_edges(image_edges, width0, height0, stepW0, stepH0, sizesrange, thresholdDT);
-    
-    % Compute mask:
-    mask = compute_mask_edges(windowCandidates, image_grey);
-    
-    figure()
-    subplot(1,2,1)
-    imshow(image_grey)
-    subplot(1,2,2)
-    imshow(mask)
-end
+% Try a random image:
+idx = floor(rand() * length(imageslist)) + 1;
+
+% Reading the image and converting to double:
+filename = [dirtrain, '\', imageslist(idx).name];
+image = double(imread(filename));
+
+% Converting to grayscale:
+image_grey = (image(:,:,1) + image(:,:,2) + image(:,:,3)) / (3 * 255);
+
+% Computing edges:
+image_edges = edge(image_grey, 'canny', threshold_canny, 'both', sigma);
+% image_edges = edge(image_grey, 'canny');
+
+% Sweep templates across image:
+windowCandidates = slidingWindow_edges(image_edges, width0, height0, stepW0, stepH0, sizesrange, thresholdDT);
+
+% Compute mask:
+mask = compute_mask_edges(windowCandidates, image_grey);
+
+% Show results:
+figure()
+subplot(2,2,1)
+imshow(image_grey)
+subplot(2,2,2)
+imshow(image_edges)
+subplot(2,2,3)
+imshow(mask)
 
 
 

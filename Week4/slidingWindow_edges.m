@@ -1,14 +1,11 @@
-% function [mask, windowCandidates] = slidingWindow_edges(image_edges, width0, height0, stepW0, stepH0, sizesrange, thresholdDT)
 function windowCandidates = slidingWindow_edges(image_edges, width0, height0, stepW0, stepH0, sizesrange, thresholdDT)
 
 % Initializing structures:
 windowCandidates = [];
 windows = [];
-candidates = [];
-score = [];
 
-% Loading edges templates of model signals:
-load('edgesModels_resized.mat')
+% Loading model signals:
+load('grayModels.mat')
 
 % Size of image:
 [N, M] = size(image_edges);
@@ -39,10 +36,16 @@ for sizefactor = sizesrange
     thresholdDT_resized = thresholdDT * sizefactor^2;
     
     % Adjust size of models to fit the windows:
-    templates{1} = imresize(circleEdges * 255, [height, width]) / 255;
-    templates{2} = imresize(squareEdges * 255, [height, width]) / 255;
-    templates{3} = imresize(upTriangleEdges * 255, [height, width]) / 255;
-    templates{4} = imresize(downTriangleEdges * 255, [height, width]) / 255;
+    templates{1} = imresize(circleTemp, [height, width]);
+    templates{2} = imresize(squareTemp, [height, width]);
+    templates{3} = imresize(upTriangleTemp, [height, width]);
+    templates{4} = imresize(downTriangleTemp, [height, width]);
+    
+    % Compute edges from gray models:
+    templates{1} = edge(templates{1}, 'canny');
+    templates{2} = edge(templates{2}, 'canny');
+    templates{3} = edge(templates{3}, 'canny');
+    templates{4} = edge(templates{4}, 'canny');
 
     % Trying all windows over the image:
 %     filas = length(1 : stepH : N-height+1)
@@ -61,8 +64,8 @@ for sizefactor = sizesrange
             % (circle, square, and up and down triangles)
             minWindowScore = height * width * sqrt(height * width); % Initialize with a very high value.
             for signal_shape = 1:4
-                % Sum of product of the Distance Transform and the edges in 
-                % the window:
+                % Sum of product of the edge models and the Distance
+                % Transform of the image:
                 windowScore = sum(sum(templates{signal_shape} .* subIm));
 
                 % Minimum score between the different shapes:
@@ -75,8 +78,6 @@ for sizefactor = sizesrange
             if(minWindowScore < thresholdDT_resized)
                 fprintf('%f     %f\n', minWindowScore, thresholdDT_resized)
                 windows = [windows, struct('x', m, 'y', n, 'w', width, 'h', height)];
-%                 candidates = [candidates; m, n, width, height];
-%                 score = [score; minWindowScore];
             end
         end
     end
@@ -100,6 +101,7 @@ end
 %     plot([x x+w], [y+h y+h], 'y')
 % end
 
+fprintf('Number of detected windows: %i\n', length(windows))
 
 % Delete overlapped detections (union)
 imPos = 1:M*N;
@@ -110,6 +112,7 @@ if(0 == isempty(windows))
     
     % Loop over the rest of the cadidate windows:
     for winPos = 2:length(windows)
+        winPos
         % Coordinates of current window:
         x_pos = windows(winPos).x;
         y_pos = windows(winPos).y;
@@ -150,17 +153,6 @@ if(0 == isempty(windows))
         end
     end
 end
-
-% % Generate the final mask
-% mask = zeros(N,M);
-% for winDef = 1:length(windowCandidates)
-%     % Coordinates of current window:
-%     x = windowCandidates(winDef).x;
-%     y = windowCandidates(winDef).y;
-%     w = windowCandidates(winDef).w;
-%     h = windowCandidates(winDef).h;
-%     mask(y:y+h-1, x:x+w-1) = image_edges(y:y+h-1, x:x+w-1);
-% end
 
 end
 
