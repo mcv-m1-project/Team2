@@ -34,6 +34,8 @@ stepW0 = width0 * 0.1;
 % Threshold for accepting a window:
 thresholdDT = 10000;
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Try a random image:
 idx = floor(rand() * length(imageslist)) + 1;
 
@@ -63,6 +65,7 @@ imshow(image_edges)
 subplot(2,2,3)
 imshow(mask)
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 

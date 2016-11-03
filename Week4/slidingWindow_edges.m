@@ -15,9 +15,6 @@ load('grayModels.mat')
 % ones loaded previously.
 templates = cell(4);
 
-%calculate distance transform of edge's image
-bwdist(image_edges);
-
 % Apply Distance Transform to image:
 image_dt = bwdist(image_edges);
 
