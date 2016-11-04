@@ -21,8 +21,6 @@ image_dt = bwdist(image_edges);
 % Loop over sizes:
 for sizefactor = sizesrange
     
-    sizefactor
-    
     % Resizing width and height:
     height = max(round(height0 * sqrt(sizefactor)), 1);
     width = max(round(width0 * sqrt(sizefactor)), 1);
@@ -73,7 +71,7 @@ for sizefactor = sizesrange
 
             % Deciding if the window is a candidate:
             if(minWindowScore < thresholdDT_resized)
-                fprintf('%f     %f\n', minWindowScore, thresholdDT_resized)
+%                 fprintf('scores: %f     ths: %f     m: %i     n: %i\n', minWindowScore, thresholdDT_resized, m, n)
                 windows = [windows, struct('x', m, 'y', n, 'w', width, 'h', height)];
             end
         end
@@ -109,7 +107,7 @@ if(0 == isempty(windows))
     
     % Loop over the rest of the cadidate windows:
     for winPos = 2:length(windows)
-        winPos
+%         winPos
         % Coordinates of current window:
         x_pos = windows(winPos).x;
         y_pos = windows(winPos).y;

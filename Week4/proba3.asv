@@ -1,0 +1,23 @@
+clearvars
+close all
+
+X = zeros(10,10);
+X(5,:) = 1;
+XDT = bwdist(X);
+
+height = 5;
+width = 5;
+
+template = zeros(height,width);
+template(1,:) = 1;
+template(height,:) = 1;
+template(:,1) = 1;
+template(:,width) = 1;
+
+convolucion = conv2(X,template,'same');
+
+n = 4;
+m = 3;
+subIm = XDT(n:n+height-1, m:m+width-1)
+score = 
+
