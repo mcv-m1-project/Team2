@@ -89,7 +89,7 @@ end
 %     plot([x x+w], [y+h y+h], 'y')
 % end
 
-fprintf('Number of detected windows: %i\n', length(windows))
+% fprintf('Number of detected windows: %i\n', length(windows))
 
 % Delete overlapped detections (union)
 imPos = 1:M*N;
