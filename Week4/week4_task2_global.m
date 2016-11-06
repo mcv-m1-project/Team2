@@ -1,3 +1,7 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Task 2, with sliding windows. Distance Transform is computed for every
+% window, and is the only criterium to accept or reject them.
+
 clearvars
 close all
 
