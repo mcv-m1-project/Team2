@@ -6,7 +6,7 @@ clearvars
 close all
 
 % Setting seed for random numbers:
-% rng(1000)
+rng(1000)
 
 % Load signals parameters:
 load('signals_main_parameters.mat')
@@ -31,7 +31,7 @@ dirmasks = [dirtrain, '\result_masks\CCL'];
 maskslist = listFiles(dirmasks);
 
 % Threshold for accepting a window:
-thresholdDT0 = 25000;
+thresholdDT0 = 10000;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -45,13 +45,9 @@ while(flag)
     maskin = imread(maskname);
     imagename = [dirtrain, '\',  maskslist(idx).name(1:end-4), '.jpg'];
     image = double(imread(imagename));
-    windowsfile = load([dirmasks, '\', maskslist(idx).name(1:end-4), '.mat']);
-    windowsIn = windowsfile.windowCandidates;
+    windowsIn = load([dirmasks, '\', maskslist(idx).name(1:end-4), '.mat']);
     
-    if(windowsIn(1).x == 0 || ...
-       windowsIn(1).y == 0 || ...
-       windowsIn(1).w == 0 || ...
-       windowsIn(1).h == 0)
+    if(windowsIn.windowCandidates(1).x == 0)
         fprintf('Empty mask. Trying again...\n')
     else
         flag = 0;
@@ -62,7 +58,8 @@ end
 image_grey = (image(:,:,1) + image(:,:,2) + image(:,:,3)) / (3 * 255);
 
 % Part of the image in the mask:
-imagein = compute_mask_edges(windowsIn, image_grey);
+imagein = compute_mask_edges(windowsIn.windowC, image_grey);
+imshow(imagein)
 
 % Computing edges:
 image_edges = edge(image_grey, 'canny', threshold_canny, 'both', sigma);
@@ -79,10 +76,10 @@ for win = 1:length(windowsIn)
     fprintf('Checking window %i / %i... ', win, length(windowsIn))
     
     % Window coordinates:
-    x = windowsIn(win).x;
-    y = windowsIn(win).y;
-    w = windowsIn(win).w;
-    h = windowsIn(win).h;
+    x = windowsIn.windowCandidates(win).x;
+    y = windowsIn.windowCandidates(win).y;
+    w = windowsIn.windowCandidates(win).w;
+    h = windowsIn.windowCandidates(win).h;
     
     area = h * w;
     factor = area / area0;
@@ -121,16 +118,21 @@ for win = 1:length(windowsIn)
     end
 end
 
-% Part of the image in the mask:
-imageout = compute_mask_edges(windowsOut, image_grey);
-
+% Draw windows candidates
 figure()
-subplot(2,2,1)
+% img_candidates = image_edges;
+% imshow(img_candidates, [0 1])
 imshow(image_grey)
-subplot(2,2,2)
-imshow(imagein)
-subplot(2,2,3)
-imshow(imageout)
-
+hold on
+for i=1:length(windowsOut)
+    x = windowsOut(i).x;
+    y = windowsOut(i).y;
+    w = windowsOut(i).w;
+    h = windowsOut(i).h;
+    plot([x x], [y y+h], 'y')
+    plot([x+w x+w], [y y+h], 'y')
+    plot([x x+w], [y y], 'y')
+    plot([x x+w], [y+h y+h], 'y')
+end
 
 
