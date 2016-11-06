@@ -1,10 +1,12 @@
-function [mask, windowCandidates] = templateMatchingSweep( im, models, system, th )
-%TEMPLATEMATCHING Summary of this function goes here
+function [mask, windowCandidates] = templateMatchingSweepColor( im, models, system, th )
+%TEMPLATEMATCHINGCOLOR Summary of this function goes here
 %   Detailed explanation goes here
-    maskUpTriangle = sweepModel(im,models.upTriangleTemp_gray,system, th);
-    maskDownTriangle = sweepModel(im,models.downTriangleTemp_gray,system, th);
-    maskSquare = sweepModel(im,models.squareTemp_gray,system, th);
-    maskCircle = sweepModel(im,models.circleTemp_gray,system, th);
+    im = rgb2hsv(im);
+    masks = load('maskModels');
+    maskUpTriangle = sweepModel(im,models.upTriangleTemp_color,masks.upTriangleTemp_mask,system, th);
+    maskDownTriangle = sweepModel(im,models.downTriangleTemp_color,masks.downTriangleTemp_mask,system, th);
+    maskSquare = sweepModel(im,models.squareTemp_color,masks.squareTemp_mask,system, th);
+    maskCircle = sweepModel(im,models.circleTemp_color,masks.circleTemp_mask,system, th);
 
     mask = maskUpTriangle + maskDownTriangle + maskSquare + maskCircle;
     mask(mask > 0) = 1;
@@ -22,41 +24,46 @@ function [mask, windowCandidates] = templateMatchingSweep( im, models, system, t
     end
 end
 
-function mask = sweepModel(im, model, system, th)
+function mask = sweepModel(im, model, subMask, system, th)
 [imN,imM,~] = size(im);
 mask = zeros(imN,imM);
+model = rgb2hsv(model);
 while size(model,1)*size(model,2) > 915
     [modelN,modelM,~] = size(model);
-    subMask = zeros(modelN, modelM,3);
-    subMask(model>0) = 1;
     switch system
-        case 'substraction'
+        case 'susbtraction'
             minSAD = th;
             % loop through the search image
-            for x = 1:round(modelN*0.1):(imN - modelN)
-                for y = 1:round(modelN*0.1):(imM - modelM)
+            for x = 1:(imN - modelN)
+                for y = 1:(imM - modelM)
                     SAD = 0;
                     % loop through the template image
                     for j = 1:modelM
                         for i = 1:modelN
-                            p_Im = double(im(x+i,y+j));
-                            p_Template = double(model(i,j));
+                            p_Im_H = im(x+i,y+j,1);
+                            p_Template_H = model(i,j,1);
                             
-                            SAD = SAD + abs( p_Im - p_Template );
+                            p_Im_S = im(x+i,y+j,2);
+                            p_Template_S = model(i,j,2);
+                            
+                            SAD = SAD + abs( p_Im_H - p_Template_H ) + abs( p_Im_S - p_Template_S );
                         end
-                    end
-                    % save the best found position
-                    if ( minSAD > SAD )
-                        minSAD = SAD;
-                        % give me min SAD
-                        bestRow = x;
-                        bestCol = y;
+                        
+                        % save the best found position
+                        if ( minSAD > SAD )
+                            minSAD = SAD;
+                            % give me min SAD
+                            bestRow = x;
+                            bestCol = y;
+                        end
                     end
                 end
             end
-            mask(bestRow:min(imN,bestRow+modelN-1),bestCol:min(imM,bestCol+modelM-1)) = subMask(:,:,1);
+            mask(bestRow:min(imN,bestRow+modelN-1),bestCol:min(imM,bestCol+modelM-1)) = subMask;
         case 'correlation'
-            R = normxcorr2(model,rgb2gray(im));
+            RH = normxcorr2(model(:,:,1),im(:,:,1));
+            RS = normxcorr2(model(:,:,2),im(:,:,2));
+            R = (RH + RS) / 2;
             if max(max(R)) > th
                 [rowsMax, colsMax] = find(R == max(max(R)));
                 rowsMax = rowsMax - modelN + 1;
@@ -89,6 +96,8 @@ while size(model,1)*size(model,2) > 915
             error('Invalid method, valid ones ara substraction and correlation');
     end
     model = imresize(model,0.7);
+    [modelN,modelM,~] = size(model);
+    subMask = imresize(model,[modelN,modelM]);
 end
 mask(mask>0) = 1;
 end
