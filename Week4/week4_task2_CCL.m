@@ -41,6 +41,8 @@ maskslist = listFiles(dirmasks);
 % Threshold for accepting a window:
 thresholdDT0 = 30000;
 
+tic
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Loop over all the images:
 progress = 10;
@@ -142,11 +144,23 @@ for idx = 1:length(maskslist)
 
     % Save mat of windows candidates
     save(strcat(outdir, '\', maskslist(idx).name(1:end-4), '.mat'), 'windowCandidates');
+    
+    % Save new mask:
+    maskout = compute_mask_edges(windowCandidates, maskin);
+    imwrite(maskout, [outdir, '\', maskslist(idx).name]);
 end
 fprintf('Completed 100%%\n')
 
+time = toc;
+fprintf('\nTotal time: %f.      Time per frame: %f\n', time, time / length(maskslist))
+
 % Compute efficiency:
-[precision, recall, accuracy, F1, TP, FN, FP] = region_based_evaluation(dirtrain, outdir);
+fprintf('\nRegion based evaluation:\n')
+[precision, recall, accuracy, F1, TP, FN, FP] = region_based_evaluation(dirtrain, outdir)
+fprintf('Precision: %f         Recall: %f\n', precision, recall)
+
+fprintf('\nPixel based evaluation:\n')
+[precision, recall, accuracy, F1, TP, FN, FP] = pixel_based_evaluation(dirtrain, outdir)
 fprintf('Precision: %f         Recall: %f\n', precision, recall)
 
 

@@ -2,8 +2,6 @@ function mask = compute_mask_edges(windowCandidates, image)
 
 mask = zeros(size(image));
 
-fprintf('Computing mask with %i windows\n', length(windowCandidates))
-
 for window = windowCandidates
     x = window.x;
     y = window.y;
