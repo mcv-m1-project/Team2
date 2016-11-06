@@ -1,6 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Task 2, taking the masks computed with Connected Components Labeling in
-% week 3.
+% Task 2, taking the masks computed with Sliding Windows in week 3.
 
 clearvars
 close all
@@ -21,9 +20,7 @@ threshold_canny = [0.05, 0.2];
 sigma = 1;
 
 % Train data set directory:
-% dirtrain = [pwd, '\..\..\train'];
-dirtrain = [pwd, '\..\..\validation'];
-% dirtrain = [pwd, '\..\..\test'];
+dirtrain = [pwd, '\..\..\train'];
 
 % Directory with CCL masks of week 3:
 dirmasks = [dirtrain, '\result_masks\CCL'];
@@ -31,15 +28,11 @@ dirmasks = [dirtrain, '\result_masks\CCL'];
 % Directoy to write results:
 outdir = [dirtrain, '\result_masks\CCL_edges'];
 
-if(exist(outdir, 'dir') ~= 7)
-    mkdir(outdir)
-end
-
 % List of train images:
 maskslist = listFiles(dirmasks);
 
 % Threshold for accepting a window:
-thresholdDT0 = 30000;
+thresholdDT0_vec = 30000;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Loop over all the images:

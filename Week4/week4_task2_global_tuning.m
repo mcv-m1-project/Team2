@@ -1,6 +1,8 @@
 clearvars
 close all
 
+addpath([pwd, '\..\evaluation\'])
+
 % Setting seed for random numbers:
 rng(2000)
 
@@ -17,7 +19,7 @@ threshold_canny = [0.05, 0.2];
 sigma = 1;
 
 % Train data set directory:
-dirtrain = [pwd, '\..\..\minitrain'];
+dirtrain = [pwd, '\..\..\minitrain\Circle'];
 outdir = [dirtrain, '\result_masks'];
 
 % List of train images:
@@ -36,7 +38,7 @@ stepH0 = height0 * 0.05;
 stepW0 = width0 * 0.05;
 
 % Threshold for accepting a window:
-thresholdDT_vec = [8000, 9000, 10000, 11000, 12000];
+thresholdDT_vec = [10000, 12000, 15000, 20000, 25000];
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
