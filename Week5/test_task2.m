@@ -59,9 +59,9 @@
                 mask_edges = edge(mask_windowed, 'canny');
                 
                 figure(1)
-                subplot(3,1,1), imshow(im_windowed_gray)
-                subplot(3,1,2), imshow(mask_windowed, [0,1])
-                subplot(3,1,3), imshow(mask_edges)
+                subplot(2,2,1), imshow(im_windowed_gray)
+                subplot(2,2,2), imshow(mask_windowed, [0,1])
+                subplot(2,2,3), imshow(mask_edges)
                 
                 %Compute the Hough Transform of the edges binary image
                 %[H,T,R] = hough(BW,'RhoResolution',0.5,'ThetaResolution',0.5);
@@ -69,7 +69,7 @@
                 [H,theta,rho] = hough(mask_edges);
                 figure(2)
                 imshow(imadjust(mat2gray(H)),'XData',theta,'YData',rho,...
-                    'InitialMagnification','fit');
+                    'InitialMagnification','fit'), hold on
                 title('Hough transform of gantrycrane.png');
                 xlabel('\theta'), ylabel('\rho');
                 axis on, axis normal, hold on;
@@ -79,12 +79,13 @@
                 %Superimpose a plot on the image of the transform that identifies the peaks
                 x = theta(P(:,2));
                 y = rho(P(:,1));
-                figure(3)
+                figure(2)
                 plot(x,y,'s','color','black');
+                hold off
                 %Find lines in the image using the houghlines function.
                 lines = houghlines(mask_edges,theta,rho,P,'FillGap',5,'MinLength',7);
                 %Create a plot that displays the original image with the lines superimposed on it.
-                figure(4), imshow(im_windowed_gray), hold on
+                figure(1), subplot(2,2,4), imshow(im_windowed_gray), hold on
                 max_len = 0;
                 for k = 1:length(lines)
                     xy = [lines(k).point1; lines(k).point2];
@@ -103,7 +104,7 @@
                 end
                 % highlight the longest line segment
                 plot(xy_long(:,1),xy_long(:,2),'LineWidth',2,'Color','red');
-                
+                hold off 
                 signal_detected = false;
                 if(signal_detected == true)                              
                     out_mask(window.y+1:window.y+window.h, window.x+1:window.x+window.w) = mask_resized | out_mask(window.y+1:window.y+window.h, window.x+1:window.x+window.w);
