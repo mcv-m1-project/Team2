@@ -10,9 +10,9 @@
     files = ListFiles(dirTestImages);
     nFiles = length(files);
     
-        if(7~=exist(outputDir,'dir'))
+    if(7~=exist(outputDir,'dir'))
         mkdir(outputDir);
-        end
+    end
     
     % Parameters for Canny edge detector:
     threshold_canny = [0.05, 0.2];
@@ -30,7 +30,7 @@
     files = ListFiles(dirTestImages);
     nFiles = length(files);
     
-        for i=1:nFiles
+    for i=1:nFiles
         fileId = files(i).name(1:9);
         windowCandidates = [];
         %Load image

@@ -22,14 +22,14 @@ sigma = 1;
 
 % Train data set directory:
 % dirtrain = [pwd, '\..\..\train'];
-dirtrain = [pwd, '\..\..\validation'];
-% dirtrain = [pwd, '\..\..\test'];
+% dirtrain = [pwd, '\..\..\validation'];
+dirtrain = [pwd, '\..\..\test'];
 
 % Directory with CCL masks of week 3:
 dirmasks = [dirtrain, '\result_masks\CCL'];
 
 % Directoy to write results:
-outdir = [dirtrain, '\result_masks\CCL_edges'];
+outdir = [dirtrain, '\result_masks\CCL_chamfer'];
 
 if(exist(outdir, 'dir') ~= 7)
     mkdir(outdir)
