@@ -59,41 +59,30 @@ function houghDetectSignal(dirTestImages, inputWindowsDir, outputDir, delta_thet
                  %im_windowed = imcrop(im,[window.x+1,window.y+1,window.w-1,window.h-1]);
                  %im_windowed_gray = rgb2gray(im_windowed);
                  
-                 %Crop de candidate window mask
-                 %mask_windowed = imcrop(mask,[window.x+1,window.y+1,window.w-1,window.h-1]);
-                 mask_windowed = mask(window.y:window.y+window.h-1, window.x:window.x+window.w-1, :);
+                 im_windowed = im(window.y:window.y+window.h-1, window.x:window.x+window.w-1, :);
+                 im_windowed = imresize(im_windowed, [max(window.w,window.h), max(window.w,window.h)]);
+                 im_windowed_gray = rgb2gray(im_windowed);
                  
-                 % A window cannot be smaller than 32x32 to perform Hough circle
-                 % detection.
-                 if((window.h >= 32) && (window.w >= 32))
-                     
-                     im_windowed = im(window.y:window.y+window.h-1, window.x:window.x+window.w-1, :);
-                     im_windowed = imresize(im_windowed, [max(window.w,window.h), max(window.w,window.h)]);
-                     im_windowed_gray = rgb2gray(im_windowed);
-                     
-                     minrad = round(min(size(im_windowed,1), size(im_windowed,2)) / 3);
-                     maxrad = round(min(size(im_windowed,1), size(im_windowed,2)) / 2 * 1.2);
-                     
-                     circle_detected = false;
-                     triangle_detected = false;
-                     square_detected = false;
-                     % Compute the Hough Transform searching for circles:
-                     % It is important to note that we are feeding this function
-                     % with the greyscale image, not the edges one. This means the
-                     % edges we are finding may not be the ones actually used inside
-                     % the function.
-                     [~, ~, cirrad] = CircularHough_Grd(im_windowed_gray, ...
-                         [minrad, maxrad], grdthres, fltr4LM_R);
-                     if(~isempty(cirrad))
-                         circle_detected = true;
-                     else
-                         circle_detected = false;
-                     end
+                 minrad = round(min(size(im_windowed,1), size(im_windowed,2)) / 3);
+                 maxrad = round(min(size(im_windowed,1), size(im_windowed,2)) / 2 * 1.2);
+                 
+                 % Compute the Hough Transform searching for circles:
+                 % It is important to note that we are feeding this function
+                 % with the greyscale image, not the edges one. This means the
+                 % edges we are finding may not be the ones actually used inside
+                 % the function.
+                 [~, ~, cirrad] = CircularHough_Grd(im_windowed_gray, ...
+                     [minrad, maxrad], grdthres, fltr4LM_R);
+                 if(~isempty(cirrad))
+                     circle_detected = true;
                  else
                      circle_detected = false;
                  end
                  
                  if(circle_detected == false)
+                     %Crop de candidate window mask
+                     %mask_windowed = imcrop(mask,[window.x+1,window.y+1,window.w-1,window.h-1]);
+                     mask_windowed = mask(window.y:window.y+window.h-1, window.x:window.x+window.w-1, :);
                      % Compute mask edges with Canny:
                      mask_edges = edge(mask_windowed, 'canny', threshold_canny, sigma);
                      
