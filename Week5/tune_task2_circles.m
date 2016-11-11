@@ -6,9 +6,9 @@ addpath('..\evaluation')
 addpath([pwd, '\..\circular_hough\'])
 
 %Paths
-dirTestImages = [pwd, '\..\..\train'];
-inputWindowsDir = [dirTestImages, '\result_masks\CC\'];
-outputDir = [dirTestImages, '\result_masks\week5_task2_hough_circles\'];
+dirTestImages = [pwd, '\..\..\train_circular'];
+inputWindowsDir = [dirTestImages, '\result_masks\CC'];
+outputDir = [dirTestImages, '\result_masks\week5_task2_hough_circles'];
 
 files = ListFiles(dirTestImages);
 nFiles = length(files);
