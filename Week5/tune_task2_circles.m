@@ -1,11 +1,12 @@
 clearvars
 close all
 
+%Paths
 addpath('..\')
 addpath('..\evaluation')
 addpath([pwd, '\..\circular_hough\'])
 
-%Paths
+% Directories:
 dirTestImages = [pwd, '\..\..\train_circular'];
 inputWindowsDir = [dirTestImages, '\result_masks\CC'];
 outputDir = [dirTestImages, '\result_masks\week5_task2_hough_circles'];
