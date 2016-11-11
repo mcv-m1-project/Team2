@@ -9,9 +9,9 @@
     
     %Final values for maximum angle deviation of quare and triangle signal
     %lines
-    delta_theta_90 = 10;
-    delta_theta_30 = 5;
-    delta_theta_0 = 15;
+    delta_theta_90 = 4;
+    delta_theta_30 = 8;
+    delta_theta_0 = 19;
     
     tic
     houghDetectSignal(dirTestImages, inputWindowsDir, outputDir, delta_theta_90, delta_theta_30, delta_theta_0);
