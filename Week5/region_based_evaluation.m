@@ -49,4 +49,6 @@ for i = 1:size(precision)
              TP(i), FP(i), FN(i))
 end
 
+fprintf('F1 = %f\n', F1)
+
 end

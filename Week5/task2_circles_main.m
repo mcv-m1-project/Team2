@@ -29,6 +29,7 @@ fprintf('Total time: %f\n Time per frame: %f\n', totalTime, timePerFrame);
 
 % Evaluate:
 [precision, recall, accuracy, F1, TP, FN, FP] = region_based_evaluation(dirTestImages, outputDir);
+[precision, recall, accuracy, F1, TP, FN, FP] = pixel_based_evaluation(dirTestImages, outputDir);
 
 
 
