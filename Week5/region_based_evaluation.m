@@ -40,7 +40,7 @@ F1 = 2*precision*recall/(precision+recall);
                
 % Summary of signal types:
 fprintf('\nSummary of region based evaluation results:\n')
- fprintf(['Precision | Accuracy | sensitivity | ', ...
+fprintf(['Precision | Accuracy | Recall | ', ...
              'TP | FP | FN |\n'])
 for i = 1:size(precision)
     fprintf(['%5.3f |\t%5.3f |\t%5.3f |\t', ...
@@ -48,5 +48,6 @@ for i = 1:size(precision)
              precision(i), accuracy(i), recall(i), ...
              TP(i), FP(i), FN(i))
 end
-F1
+fprintf('F1 = %f\n', F1)
+
 end

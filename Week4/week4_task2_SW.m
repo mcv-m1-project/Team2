@@ -1,5 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Task 2, taking the masks computed with Sliding Windows in week 3.
+% Task 2, taking the masks computed with Connected Components Labeling in
+% week 3.
 
 clearvars
 close all
@@ -20,19 +21,27 @@ threshold_canny = [0.05, 0.2];
 sigma = 1;
 
 % Train data set directory:
-dirtrain = [pwd, '\..\..\train'];
+% dirtrain = [pwd, '\..\..\train'];
+dirtrain = [pwd, '\..\..\validation'];
+% dirtrain = [pwd, '\..\..\test'];
 
 % Directory with CCL masks of week 3:
-dirmasks = [dirtrain, '\result_masks\CCL'];
+dirmasks = [dirtrain, '\result_masks\slidingWindow_week3'];
 
 % Directoy to write results:
-outdir = [dirtrain, '\result_masks\CCL_edges'];
+outdir = [dirtrain, '\result_masks\slidingWindow_week3_chamfer'];
+
+if(exist(outdir, 'dir') ~= 7)
+    mkdir(outdir)
+end
 
 % List of train images:
 maskslist = listFiles(dirmasks);
 
 % Threshold for accepting a window:
-thresholdDT0_vec = 30000;
+thresholdDT0 = 30000;
+
+tic
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Loop over all the images:
@@ -52,10 +61,13 @@ for idx = 1:length(maskslist)
     windowsfile = load([dirmasks, '\', maskslist(idx).name(1:end-4), '.mat']);
     windowsIn = windowsfile.windowCandidates;
 
-    if(windowsIn(1).x == 0 || ...
-       windowsIn(1).y == 0 || ...
-       windowsIn(1).w == 0 || ...
-       windowsIn(1).h == 0)
+%     if(windowsIn(1).x == 0 || ...
+%        windowsIn(1).y == 0 || ...
+%        windowsIn(1).w == 0 || ...
+%        windowsIn(1).h == 0)
+%         % In this case we don't do anything (there is nothing we can
+%         % do).
+    if(isempty(windowsIn))
         % In this case we don't do anything (there is nothing we can
         % do).
     else
@@ -135,11 +147,23 @@ for idx = 1:length(maskslist)
 
     % Save mat of windows candidates
     save(strcat(outdir, '\', maskslist(idx).name(1:end-4), '.mat'), 'windowCandidates');
+    
+    % Save new mask:
+    maskout = compute_mask_edges(windowCandidates, maskin);
+    imwrite(maskout, [outdir, '\', maskslist(idx).name]);
 end
 fprintf('Completed 100%%\n')
 
+time = toc;
+fprintf('\nTotal time: %f.      Time per frame: %f\n', time, time / length(maskslist))
+
 % Compute efficiency:
-[precision, recall, accuracy, F1, TP, FN, FP] = region_based_evaluation(dirtrain, outdir);
+fprintf('\nRegion based evaluation:\n')
+[precision, recall, accuracy, F1, TP, FN, FP] = region_based_evaluation(dirtrain, outdir)
+fprintf('Precision: %f         Recall: %f\n', precision, recall)
+
+fprintf('\nPixel based evaluation:\n')
+[precision, recall, accuracy, F1, TP, FN, FP] = pixel_based_evaluation(dirtrain, outdir)
 fprintf('Precision: %f         Recall: %f\n', precision, recall)
 
 

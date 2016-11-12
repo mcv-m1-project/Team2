@@ -483,9 +483,15 @@ for k = 1 : size(accumAOI, 1),
         fltr4LM , 'same' );
     candLM_mask = ( candLM > 0 );
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%% MODIFIED LINE %%%%%%%%%%%%%%%%%%%%%%%
+    prm_fltrLM_R_mod = min(prm_fltrLM_R, min(size(candLM_mask)));
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     % Clear the margins of 'candLM_mask'
-    candLM_mask([1:prm_fltrLM_R, (end-prm_fltrLM_R+1):end], :) = 0;
-    candLM_mask(:, [1:prm_fltrLM_R, (end-prm_fltrLM_R+1):end]) = 0;
+    candLM_mask([1:prm_fltrLM_R_mod, (end-prm_fltrLM_R_mod+1):end], :) = 0;
+    candLM_mask(:, [1:prm_fltrLM_R_mod, (end-prm_fltrLM_R_mod+1):end]) = 0;
 
     % **** Debug code (begin)
     if dbg_on,
