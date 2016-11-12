@@ -16,13 +16,13 @@ F1Vec = [];
 delta_theta_90_vec = [];
 delta_theta_30_vec = [];
 delta_theta_0_vec = [];
+grdthres = 3;
+fltr4LM_R = 15;
 
-for delta_theta_90=0:2:10
-        for delta_theta_30=0:2:10    
-            for delta_theta_0=0:3:15               
-                
-                houghDetectSignal(dirTestImages, inputWindowsDir, outputDir, delta_theta_90, delta_theta_30, delta_theta_0);
-                
+for delta_theta_90=2:1:8
+        for delta_theta_30=2:1:8    
+            for delta_theta_0=12:2:24               
+                houghDetectSignal(dirTestImages, inputWindowsDir, outputDir, delta_theta_90, delta_theta_30, delta_theta_0, grdthres, fltr4LM_R);
                 TP = 0;
                 FN = 0;
                 FP = 0;
@@ -50,4 +50,4 @@ for delta_theta_90=0:2:10
         end
     end
    
-    save('results_train_task2', 'precisionVec', 'recallVec', 'F1Vec', 'up_triangle_th_vec', 'down_triangle_th_vec', 'square_th_vec', 'circle_th_vec');
+    save('results_train_task2_2', 'precisionVec', 'recallVec', 'F1Vec', 'delta_theta_90_vec', 'delta_theta_30_vec', 'delta_theta_0_vec');
