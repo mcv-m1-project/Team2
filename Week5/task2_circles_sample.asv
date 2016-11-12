@@ -13,23 +13,26 @@ inputWindowsDir = [dirTestImages, '\result_masks\CC'];
 outputDir = [dirTestImages, '\result_masks\week5_task2_hough_circles'];
 
 % Parameters:
-grdthres = 1.5;
-fltr4LM_R = 23;
+grdthres = 3;
+fltr4LM_R = 15;
 resize = 1;
 
-% List files:
-files = listFiles(dirTestImages);
+
+
+files = ListFiles(dirTestImages);
 nFiles = length(files);
 
-% Select a random image:
-i = floor(rand() * nFiles) + 1;
+if(7~=exist(outputDir,'dir'))
+    mkdir(outputDir);
+end
 
-% File name:
+i = floor(rand() * nFiles) + 1;
+    
 fileId = files(i).name(1:9);
+windowCandidates = [];
 
 % Load image
 im = imread([dirTestImages, '\', files(i).name]);
-imshow(im)
 
 % Load window candidates for this image
 windowCC = load([inputWindowsDir, '\', fileId, '.mat']);
@@ -45,13 +48,11 @@ for idx = 1:size_win
 
     % Check if the window is empty
     if(x == 0 || y == 0 || w == 0 || h == 0)
-        fprintf('Empty window.\n')
         % Do nothing, just go to the next window or image.
 
     % A window cannot be smaller than 32x32 to perform Hough circle
     % detection.
     elseif(h < 32 || w < 32)
-        fprintf('Window too small.\n')
         % Do nothing, just go to the next window or image.
 
     else
@@ -76,12 +77,12 @@ for idx = 1:size_win
                             [minrad, maxrad], grdthres, fltr4LM_R);
 
         % Plotting results:
-        figure(2);
+        figure(1);
         imagesc(accum);
         axis image;
         title('Accumulation Array from Circular Hough Transform');
 
-        figure(3);
+        figure(2);
         imagesc(im_windowed_gray);
         colormap('gray');
         axis image;
@@ -91,8 +92,7 @@ for idx = 1:size_win
             DrawCircle(circen(k,1), circen(k,2), cirrad(k), 32, 'b-');
         end
         hold off;
-        titulo = sprintf('Image %i', i);
-        title(titulo);
+        title(['Raw Image with Circles Detected ', '(center positions and radii marked)']);
     end
 end
 
