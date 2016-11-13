@@ -15,8 +15,8 @@
     delta_theta_90 = 4;
     delta_theta_30 = 8;
     delta_theta_0 = 19;
-    grdthres = 3;
-    fltr4LM_R = 15;
+    grdthres = 1.5;
+    fltr4LM_R = 23;
     
     tic
     houghDetectSignal(dirTestImages, inputWindowsDir, outputDir, delta_theta_90, delta_theta_30, delta_theta_0, grdthres, fltr4LM_R);

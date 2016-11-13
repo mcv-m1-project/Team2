@@ -13,8 +13,8 @@ inputWindowsDir = [dirTestImages, '\result_masks\CC'];
 outputDir = [dirTestImages, '\result_masks\week5_task2_hough_circles'];
 
 % Parameters:
-grdthres = 3;
-fltr4LM_R = 15;
+grdthres = 1.5;
+fltr4LM_R = 23;
 resize = 1;
 
 % Run circles search:
@@ -29,7 +29,6 @@ fprintf('Total time: %f\n Time per frame: %f\n', totalTime, timePerFrame);
 
 % Evaluate:
 [precision, recall, accuracy, F1, TP, FN, FP] = region_based_evaluation(dirTestImages, outputDir);
-[precision, recall, accuracy, F1, TP, FN, FP] = pixel_based_evaluation(dirTestImages, outputDir);
 
 
 

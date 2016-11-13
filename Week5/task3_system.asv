@@ -1,0 +1,327 @@
+function [out_mask, windowCandidates] = task3_system(image, params)
+    % All methods in one system.
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%% Apply color segmentation %%%%%%%%%
+    mask_color = task3_colorSegmentation(image, params_cd);
+
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%% Apply morphological operators %%%%
+    mask_mo = task3_morphologicalOperators(mask_color, params_mo);
+
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%% Select candidate windows %%%%%%%%%
+    windowCandidates = task3_connectedComponents(mask_mo, params_cc);
+
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%% Apply Hough detection %%%%%%%%%%%%
+    windowCandidates = task3_houghDetection(image, mask_mo, windowCandidates, params_hd);
+
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%% Create final mask %%%%%%%%%%%%%%%%
+    out_mask = zeros(size(image));
+    for i = 1:length(windowCandidates)
+        window = windowCandidates(idx);
+        x = window.x;
+        y = window.y;
+        w = window.w;
+        h = window.h;
+        out_mask(y:y+h-1, x:x+w-1) = mask_mo(y:y+h-1, x:x+w-1);
+    end
+
+    return
+end
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function out_mask = task3_colorSegmentation(image, params_cs)
+
+    th = params_cs.th;
+    bins = params_cs.bins;
+    red_hist = params_cs.red_hist;
+    blue_hist = params_cs.blue_hist;
+    rb_hist = params_cs.rb_hist;
+
+    im_h = image(:,:,1);
+    im_s = image(:,:,2);
+    
+    pixels = [im_h(:) im_s(:)];
+    pixels = ceil(pixels*bins); % from pixels to bins
+    pixels(pixels==0) = 1;
+    
+    out_mask = zeros(size(im_h));
+    out_mask = reshape(out_mask, [size(out_mask, 1)*size(out_mask, 2), 1]);
+    
+    for p=1:size(out_mask, 1)
+        hist_i = pixels(p,1);
+        hist_j = pixels(p,2);
+        out_mask(p) = (red_hist(hist_i, hist_j) > th) | (blue_hist(hist_i, hist_j) > th) | (rb_hist(hist_i, hist_j) > th);
+    end
+    out_mask = reshape(out_mask, size(im_h));
+    
+    return
+end
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function out_mask = task3_morphologicalOperators(mask, params_mo)
+
+    signals_size = params_mo.signalSize;
+
+    %Apply imclose first to define better the signal borders
+    se = strel('square', 5);
+    out_mask = imclose(mask, se);
+
+    %Fill image holes
+    out_mask = imfill(out_mask,'holes');
+
+    el = strel('rectangle', floor([signals_size.min_height signals_size.min_width]));
+    aux_out_mask_min = imopen(out_mask, el);
+
+    el = strel('rectangle', floor([signals_size.max_height signals_size.max_width]));
+    aux_out_mask_max = imopen(out_mask, el);
+    out_mask = aux_out_mask_min | aux_out_mask_max;
+
+    return
+end
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function windowCandidates = task3_connectedComponents(mask, params_cc)
+
+    min_fr = params_cc.min_fr;
+    max_fr = params_cc.max_fr;
+    min_ff = params_cc.min_ff;
+    max_ff = params_cc.max_ff;
+    minimum_size = params_cc.minimum_size;
+    maximum_size = params_cc.maximum_size;
+
+    % Connected components:
+    CC = bwconncomp(mask);
+    % Get some properties of the connected components:
+    CCproperties = regionprops(CC, 'Extent', 'BoundingBox');%Extent: area / boundingbox_area
+    
+    % for each mask, creating an object of cc that pass the filter
+    newCC = CC;
+    newCC.NumObjects = 0;
+    newCC.PixelIdxList = cell(0);
+    
+    for j = 1:CC.NumObjects % analyze all the cc found in the mask
+        
+        current_width = CCproperties(j).BoundingBox(3); % width of the connect component's bounding box
+        current_height = CCproperties(j).BoundingBox(4); % height of the connect component's bounding box
+        
+        current_fr = CCproperties(j).Extent; % filling ratio of the current connect component
+        current_ff = current_width / current_height; % form factor of the current connect component
+           
+        current_size = current_width * current_height;
+        
+        %filter based of filling ratio and form factor
+        if (current_fr >= min_fr && current_fr <= max_fr && ... 
+           current_ff >= min_ff && current_ff <= max_ff &&...
+           current_size >= minimum_size && current_size <= maximum_size)
+       
+            %store cc
+            newCC.NumObjects = newCC.NumObjects + 1;
+            newCC.PixelIdxList{newCC.NumObjects} = CC.PixelIdxList{j};
+        end
+    end
+    
+    newCCproperties = regionprops(newCC, 'BoundingBox', 'Image');
+   
+    % Initialize window candidates (we already know its length):
+    windowCandidates(newCC.NumObjects) = struct('x', 0, 'y', 0, 'w', 0, 'h', 0);
+    
+    % Assign coordinates to windows:
+    for j = 1:newCC.NumObjects
+        windowCandidates(j).x = floor(newCCproperties(j).BoundingBox(1));
+        windowCandidates(j).y = floor(newCCproperties(j).BoundingBox(2));
+        windowCandidates(j).w = newCCproperties(j).BoundingBox(3);
+        windowCandidates(j).h = newCCproperties(j).BoundingBox(4);
+    end
+
+    return
+end
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function windowCandidates = task3_houghDetection(image, mask, windowCandidates, params_hd)
+
+    threshold_canny = params_hd.threshold_canny;
+    sigma = params_hd.sigma;
+
+     for idx = 1:length(windowCandidates)
+         window = windowCandidates(idx);
+         x = window.x;
+         y = window.y;
+         w = window.w;
+         h = window.h;
+             
+         %Check if the window candidate array is empty
+         if((x == 0) || (y == 0) || (w == 0) || (h == 0))
+             % Do nothing, just go to the next window or image.
+             
+         else
+             %Crop de candidate window mask
+             mask_windowed = mask(y:y+h-1, x:x+w-1, :);
+
+             circle_detected = false;
+             triangle_detected = false;
+             square_detected = false;
+
+             % Compute mask edges with Canny:
+             mask_edges = edge(mask_windowed, 'canny', threshold_canny, sigma);
+
+             %Compute the Hough Transform of the edges binary image
+             [H, theta, rho] = hough(mask_edges);
+
+             %Find peaks in Hough Transform
+             P = houghpeaks(H, 5, 'threshold', ceil(0.3*max(H(:))));
+
+             %Find lines in the image using the houghlines function.
+             lines = houghlines(mask_edges, theta, rho, P, 'FillGap', 5, 'MinLength', 7);
+
+             %Create three arrays to store the horizontal, vertical and
+             %triangle (30 degrees) lines
+             hor_line = [];
+             vert_line = [];
+             triang_line = [];
+             for k = 1:length(lines)
+                 if((abs(lines(k).theta) >= 90 - delta_theta_90) && (abs(lines(k).theta) <= 90 + delta_theta_90))
+                     %Horizontal line detected
+                     hor_line = [hor_line; [lines(k).point1, lines(k).point2]];
+                 elseif((abs(lines(k).theta) >= 0 - delta_theta_0) && (abs(lines(k).theta) <= 0 + delta_theta_0))
+                     %Vertical line detected
+                     vert_line = [vert_line; [lines(k).point1, lines(k).point2]];
+                 elseif((abs(lines(k).theta) >= 30 - delta_theta_30) && (abs(lines(k).theta) <= 30 + delta_theta_30))
+                     %30 degrees detected
+                     triang_line = [triang_line; [lines(k).point1, lines(k).point2, lines(k).theta]];
+                 end
+             end
+             hor_lines_counter = size(hor_line,1);
+             vert_lines_counter = size(vert_line,1);
+             triang_lines_counter = size(triang_line,1);
+             hor_lines_signal = 0;
+             vert_lines_signal = 0;
+             triang_lines_signal = 0;
+
+             %Identify if there are two different horizontal lines in the image
+             if (hor_lines_counter > 1)
+                 height_diff = 0;
+                 for idx = 1:size(hor_line,1)
+                     diff_h = min(abs(hor_line(1,2) - hor_line(idx,2)),abs(hor_line(1,2) - hor_line(idx,2)));
+                     if(diff_h > height_diff)
+                         height_diff = diff_h;
+                     end
+                 end
+                 if(height_diff < min_height)
+                     hor_lines_signal = 1;
+                 else
+                     hor_lines_signal = 2;
+                 end
+             end
+
+             %Identify if there are two different vertical lines in the image
+             if (vert_lines_counter > 1)
+                 width_diff = 0;
+                 for j = 1:size(vert_line,1)
+                     diff_w = min(abs(vert_line(1,1) - vert_line(j,1)),abs(vert_line(1,1) - vert_line(j,1)));
+                     if(diff_w > width_diff)
+                         width_diff = diff_w;
+                     end
+                 end
+                 if(width_diff < min_width)
+                     vert_lines_signal = 1;
+                 else
+                     vert_lines_signal = 2;
+                 end
+             end
+
+             %Identify if there are two different 30 degrees triangle
+             %lines
+             if (triang_lines_counter > 1)
+                 positive_30_degrees = 0;
+                 negative_30_degrees = 0;
+                 for j = 1:size(triang_line,1)
+                     if(triang_line(j,5) > 0)
+                         positive_30_degrees = positive_30_degrees + 1;
+                     else
+                         negative_30_degrees = negative_30_degrees + 1;
+                     end
+                 end
+                 if((positive_30_degrees > 0) && (negative_30_degrees > 0) )
+                     triang_lines_signal = 2;
+                 else
+                     triang_lines_signal = 1;
+                 end
+             end
+
+             %Check if a square signal was detected
+             if((hor_lines_signal > 0) && (vert_lines_signal > 0))
+                 square_detected = true;
+             elseif((hor_lines_signal > 1) || (vert_lines_signal > 1))
+                 square_detected = true;
+             else
+                 square_detected = false;
+             end
+
+             %Check if a triangle signal detected
+             if(triang_lines_signal > 1)
+                 triangle_detected = true;
+             elseif((triang_lines_signal == 1) && (hor_lines_signal > 0))
+                 triangle_detected = true;
+             else
+                 triangle_detected = false;
+             end
+
+             if((triangle_detected == false) && (square_detected == false))
+                 % A window cannot be smaller than 32x32 to perform Hough circle
+                 % detection.
+                 if(h >= 32 && w >= 32)
+                     im_windowed = image(y:y+h-1, x:x+w-1, :);
+                     im_windowed = imresize(im_windowed, [max(w,h), max(w,h)]);
+                     im_windowed_gray = rgb2gray(im_windowed);
+
+                     minrad = round(min(size(im_windowed,1), size(im_windowed,2)) / 3);
+                     maxrad = round(min(size(im_windowed,1), size(im_windowed,2)) / 2 * 1.2);
+
+
+                     % Compute the Hough Transform searching for circles:
+                     % It is important to note that we are feeding this function
+                     % with the greyscale image, not the edges one. This means the
+                     % edges we are finding may not be the ones actually used inside
+                     % the function.
+                     [~, ~, cirrad] = CircularHough_Grd(im_windowed_gray, ...
+                         [minrad, maxrad], grdthres, fltr4LM_R);
+                     if(~isempty(cirrad))
+                         circle_detected = true;
+                     else
+                         circle_detected = false;
+                     end
+                 else
+                     circle_detected = false;
+                 end
+             end
+             
+             %If a triangle or a square image is detected write to the
+             %output mask and save the window candidate
+             if((triangle_detected == true) || (square_detected == true) || (circle_detected == true))
+                 windowCandidates = [windowCandidates ; struct('x', x, 'y', y, 'w', w, 'h', h)];
+             end
+         end
+     end
+
+    return
+end
