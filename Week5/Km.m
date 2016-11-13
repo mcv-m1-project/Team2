@@ -36,4 +36,5 @@ Ikm = reshape(X,size(I,1),size(I,2),3);
 
 Labels = DAL(:,K+1);
 Labels = reshape(Labels,size(I,1),size(I,2));
+   
 end
